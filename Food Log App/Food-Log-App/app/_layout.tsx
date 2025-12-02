@@ -6,12 +6,23 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+import { useFonts } from 'expo-font';
+
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  const [fontsLoaded] = useFonts({
+    Nunito: require('@/assets/fonts/static/Nunito-Regular.ttf'),
+    NunitoBold: require('@/assets/fonts/static/Nunito-Bold.ttf'),
+    NunitoSemiBold: require('@/assets/fonts/static/Nunito-SemiBold.ttf'),
+  });
+
+  //Wait until fonts are loaded
+  if (!fontsLoaded) return null;
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -24,5 +35,4 @@ export default function RootLayout() {
       <StatusBar style="auto" />
     </ThemeProvider>
   );
-  
 }

@@ -4,16 +4,17 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useFonts } from 'expo-font';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  return (
+    return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
+        tabBarButton: HapticTab, tabBarLabelStyle: { fontFamily: 'Nunito' },
       }}>
       <Tabs.Screen
         name="Home Page"
@@ -32,3 +33,4 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
