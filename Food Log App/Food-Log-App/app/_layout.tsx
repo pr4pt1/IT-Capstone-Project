@@ -1,41 +1,38 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
-import 'react-native-reanimated';
-
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { HapticTab } from '@/components/haptic-tab';
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useFonts } from 'expo-font';
 
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
-
-export default function RootLayout() {
+export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  //Load fonts
-  const [fontsLoaded] = useFonts({
-    Nunito: require('@/assets/fonts/static/Nunito-Regular.ttf'),
-    NunitoBold: require('@/assets/fonts/static/Nunito-Bold.ttf'),
-    NunitoSemiBold: require('@/assets/fonts/static/Nunito-SemiBold.ttf'),
-  });
-
-  // Wait until fonts are loaded
-  if (!fontsLoaded) return null;
-
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="Login Page" options={{ presentation: 'modal', title: 'Login Page' }} />
-        <Stack.Screen name="Account Creation" options={{ presentation: 'modal', title: 'Account Creation' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarStyle: { display: 'none' }, // hides the tab bar
+        headerShown: false,
+        tabBarButton: HapticTab,
+      }}>
+      <Tabs.Screen
+        name="Home Page"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+    </Tabs>
   );
-  
 }
+
