@@ -7,6 +7,7 @@
 import { Platform } from 'react-native';
 import { Theme } from '@react-navigation/native';
 
+
 const tintColorLight = '#727272ff';
 const tintColorDark = '#727272ff';
 

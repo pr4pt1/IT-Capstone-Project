@@ -19,7 +19,6 @@ export default function WelcomePage() {
           style={styles.logo}
         />
         <Text style={styles.title}>Welcome Back</Text>
-        <Text style={{ fontFamily: 'Nunito', fontSize: 14 }}>This should be Nunito</Text>
       </ThemedView>
     </ThemedView>
     
@@ -50,5 +49,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
+    fontFamily: 'Nunito'
   },
 });
