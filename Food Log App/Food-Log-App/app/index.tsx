@@ -15,7 +15,7 @@ useEffect(() => {
 
   return <ThemedView style={styles.container}>
     <ThemedText type="title">Welcome to</ThemedText>
-    <ThemedText type="title">The Food Log App</ThemedText>
+    <ThemedText type="title">The Food Log</ThemedText>
         <Pressable 
         style={styles.button} onPress={() => router.push('/Login Page')}> 
         <Text style={styles.buttonText}>Start</Text>
