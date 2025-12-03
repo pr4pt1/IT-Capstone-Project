@@ -8,7 +8,10 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useFonts } from 'expo-font';
 
 
-export const unstable_settings = {};
+
+export const unstable_settings = {
+  anchor : '(tabs)',
+};
 
 
 export default function RootLayout() {
@@ -26,8 +29,9 @@ export default function RootLayout() {
 
     return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack screenOptions={{ headerShown: true }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="Login Page" options={{ presentation: 'modal', title: 'Login Page' }} />
         <Stack.Screen name="Account Creation" options={{ presentation: 'modal', title: 'Account Creation' }} />
       </Stack>

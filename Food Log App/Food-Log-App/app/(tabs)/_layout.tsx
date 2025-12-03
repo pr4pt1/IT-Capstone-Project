@@ -4,18 +4,16 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useFonts } from 'expo-font';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-    return (
+  return (
     <Tabs
       screenOptions={{
-
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab, tabBarLabelStyle: { fontFamily: 'Nunito' },
+        tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
         name="Home Page"
@@ -44,3 +42,15 @@ export default function TabLayout() {
   );
 }
 
+/*
+This is Oyins code for a tabs layout. I have no idea what it does. Please let us know or try to make it work with the tabs
+
+return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        presentation: "card",
+        animation: "fade",
+      }}
+    />
+  );*/
