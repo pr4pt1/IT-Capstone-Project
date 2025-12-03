@@ -1,4 +1,4 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, Image } from 'react-native';
+import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, Image, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 
@@ -12,6 +12,12 @@ export default function WelcomePage() {
   }, []);
 
   return (
+    //Gradient Background
+    <ImageBackground
+          source={require('@/assets/images/bg.png')}
+          style={styles.background}
+          resizeMode="cover"
+        >
     <ThemedView style={styles.container}>
       <ThemedView style={styles.headerRow}>
         <Image
@@ -21,17 +27,22 @@ export default function WelcomePage() {
         <Text style={styles.title}>Welcome Back</Text>
       </ThemedView>
     </ThemedView>
-    
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+
   container: {
     flex: 1,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingTop: 75,
     paddingLeft: 20,
+    backgroundColor: 'transparent',
   },
 
   //container for top "bar"
@@ -39,6 +50,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', //horizontal layout
     alignItems: 'center',
     gap: 10, //space between logo & text
+    backgroundColor: 'transparent',
   },
 
   logo: {

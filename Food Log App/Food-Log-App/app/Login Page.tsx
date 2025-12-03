@@ -1,4 +1,4 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform } from 'react-native';
+import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -55,6 +55,13 @@ useEffect(() => {
   }, []);
 
   return (
+    //Gradient Background
+    <ImageBackground
+      source={require('@/assets/images/bg.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+
   <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
    <ThemedView style={styles.container}>
     <ThemedText type="title">Log in now or sign up!</ThemedText>
@@ -96,17 +103,23 @@ useEffect(() => {
 
       </ThemedView>
     </ScrollView>
+  </ImageBackground>
   );
 }
 
 
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+
   container: {
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: 'transparent',
   },
 
   input: {
