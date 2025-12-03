@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useState } from 'react';
 
@@ -22,6 +22,11 @@ export default function CalendarScreen() {
   const [selectedDate, setSelectedDate] = useState('2025-12-1');
 
   return (
+    <ImageBackground
+          source={require('@/assets/images/bg.png')}
+          style={styles.background}
+          resizeMode="contain"
+        >
     <View style={styles.container}>
       {/* Page Title */}
       <View style={styles.header}>
@@ -68,20 +73,26 @@ export default function CalendarScreen() {
         </View>
       </ScrollView>
     </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#BAC095' },
+  background: {
+    flex: 1,
+  },
+
+  container: { flex: 1, backgroundColor: '#BAC095' }, //for gradient change value to 'transparent'
 
   header: {
-    padding: 16,
+    padding: 25,
     alignItems: 'center',
   },
   headerText: {
     color: '#3D4127',
     fontSize: 20,
     fontWeight: 'bold',
+    padding: 30,
   },
 
   details: { paddingHorizontal: 16, paddingTop: 8 },

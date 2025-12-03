@@ -62,5 +62,3 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito'
   },
 });
-
-    
