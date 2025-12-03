@@ -7,7 +7,9 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import home from "../../assets/icons/homeicon.png";
-
+import calendar from "../../assets/icons/calendaricon.png";
+import history from "../../assets/icons/historyicon.png";
+import settings from "../../assets/icons/settingsicon.png";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,18 +33,35 @@ export default function TabLayout() {
         }}
         />
       <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="Calendar"
         options={{
           title: 'Calendar',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="calendar" color={color} />
+          tabBarIcon: ({ focused }) => (
+            <Image 
+              source={ focused ? calendar : calendar} //add active icon later
+              style={{ width: 28, height: 28, resizeMode: "contain" }}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: 'History',
+          tabBarIcon: ({ focused }) => (
+            <Image 
+              source={ focused ? history : history} //add active icon later
+              style={{ width: 28, height: 28, resizeMode: "contain" }}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ focused }) => (
+            <Image 
+              source={ focused ? settings : settings} //add active icon later
+              style={{ width: 28, height: 28, resizeMode: "contain" }}/>
           ),
         }}
       />
