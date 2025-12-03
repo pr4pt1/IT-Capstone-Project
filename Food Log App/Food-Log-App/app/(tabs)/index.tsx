@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-// FIXED: Import SafeAreaView from the context library
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen() {
