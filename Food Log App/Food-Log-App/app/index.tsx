@@ -1,4 +1,4 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform } from 'react-native';
+import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 
@@ -28,6 +28,10 @@ export default function WelcomePage() {
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+
   container: {
     flexGrow: 1,
     alignItems: 'center',
