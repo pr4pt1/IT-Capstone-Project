@@ -1,30 +1,37 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform } from 'react-native';
+import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { useEffect } from 'react';
-
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { useState, useEffect } from 'react';
 
 export default function WelcomePage() {
-const router = useRouter();
+  const router = useRouter();
 
-useEffect(() => {
+  return (
+    //Gradient Background
+    <ImageBackground
+      source={require('@/assets/images/bg.png')}
+      style={styles.background}
+      resizeMode="contain"
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Welcome to</Text>
+        <Text style={styles.title}>The Food Log</Text>
 
-  }, []);
-
-  return <ThemedView style={styles.container}>
-    <ThemedText type="title">Welcome to</ThemedText>
-    <ThemedText type="title">The Food Log</ThemedText>
-        <Pressable 
-        style={styles.button} onPress={() => router.push('/Login Page')}> 
-        <Text style={styles.buttonText}>Start</Text>
+        <Pressable
+          style={styles.button}
+          onPress={() => router.push('/Login Page')}
+        >
+          <Text style={styles.buttonText}>Start</Text>
         </Pressable>
-</ThemedView>
+      </ScrollView>
+    </ImageBackground>
+  );
 }
 
-
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+
   container: {
     flexGrow: 1,
     alignItems: 'center',
@@ -32,14 +39,11 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  input: {
-    width: '100%',
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginTop: 12,
-    backgroundColor: '#fff'
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+    fontFamily: 'Nunito'
   },
 
   button: {
@@ -55,6 +59,7 @@ const styles = StyleSheet.create({
     color: '#b8ff7eff',
     fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: 'Nunito'
   },
 });
 
