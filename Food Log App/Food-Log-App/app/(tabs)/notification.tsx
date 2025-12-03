@@ -11,8 +11,8 @@ import {
     View,
 } from "react-native";
 
-// ✅ FIXED: Use modern SafeAreaView and new expo-audio import
-import * as Audio from 'expo-audio'; // ✅ CRITICAL FIX for 'createAsync of undefined'
+
+import * as Audio from 'expo-audio'; 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Bell, BellOff, Calendar, Clock, Home, Settings } from "lucide-react-native";
@@ -57,7 +57,7 @@ const SHADOWS = {
   },
 };
 
-function clamp01(v: number): number { // ✅ FIXED: Added type definition
+function clamp01(v: number): number { 
   return Math.max(0, Math.min(1, v));
 }
 
@@ -71,15 +71,15 @@ const TONE_MAP = {
   Bloom: require('../assets/sounds/bloom.mp3'),
 };
 
-interface SliderBasicProps { // ✅ FIXED: Added interface for props
+interface SliderBasicProps { // 
   value: number;
   onChange: (value: number) => void;
   disabled: boolean;
 }
 
-function SliderBasic({ value, onChange, disabled }: SliderBasicProps) { // ✅ FIXED: Applied interface
+function SliderBasic({ value, onChange, disabled }: SliderBasicProps) { // 
   const [width, setWidth] = React.useState(0);
-  const containerRef = React.useRef<View | null>(null); // ✅ FIXED: Added ref type
+  const containerRef = React.useRef<View | null>(null); // 
   const [containerX, setContainerX] = React.useState(0);
 
   const handleLayout = (e: any) => { // Using any for event type brevity
@@ -91,7 +91,7 @@ function SliderBasic({ value, onChange, disabled }: SliderBasicProps) { // ✅ F
     }
   };
 
-  const updateFromX = (x: number) => { // ✅ FIXED: Added type definition
+  const updateFromX = (x: number) => { // 
     if (!width || disabled) return;
     const next = clamp01(x / width);
     onChange(next);
@@ -139,11 +139,11 @@ export default function NotificationScreen() {
   const [volume, setVolume] = React.useState(0.6);
   const [tone, setTone] = React.useState(TONES[0]);
 
-  const playSound = async (selectedTone: string) => { // ✅ FIXED: Added type definition
+  const playSound = async (selectedTone: string) => { 
     try {
       if (!soundEnabled) return;
 
-      const soundPath = TONE_MAP[selectedTone as keyof typeof TONE_MAP]; // ✅ FIXED: Added type casting
+      const soundPath = TONE_MAP[selectedTone as keyof typeof TONE_MAP];
       if (!soundPath) return;
 
       // Using new expo-audio API
@@ -195,7 +195,7 @@ export default function NotificationScreen() {
         <Text style={styles.headerTitle}>Notification Sound</Text>
       </View>
 
-      {/* ✅ FIXED: Added flexGrow: 1 and justify-content to push the tabbar to the bottom */}
+     
       <ScrollView contentContainerStyle={styles.scrollContent}> 
         <View style={styles.card}>
           <View style={styles.rowBetween}>
