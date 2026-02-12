@@ -34,6 +34,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="Login Page" options={{ presentation: 'modal', title: 'Login Page' }} />
         <Stack.Screen name="Account Creation" options={{ presentation: 'modal', title: 'Account Creation' }} />
+        <Stack.Screen name="Log Meal Page" options={{ presentation: 'modal', title: 'Log Meal Page' }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
