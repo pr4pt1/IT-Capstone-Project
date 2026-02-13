@@ -30,10 +30,10 @@ export default function WelcomePage() {
                   {/* Log Meal page */}
                 <Pressable
                   style={styles.button}
-                  onPress={() => router.push('/Log Meal Page')}
+                  onPress={() => router.push('/LogMealPage')}
                 >
                   <Text style={styles.buttonText}>Log Your meal button</Text>
-                </Pressable>
+                </Pressable> 
     </ThemedView>
     </ImageBackground>
   );

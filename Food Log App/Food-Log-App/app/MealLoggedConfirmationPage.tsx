@@ -1,12 +1,11 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground} from 'react-native';
+import { Text,  StyleSheet,  ScrollView, Pressable,  ImageBackground} from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
-export default function LogMealPage() {
+export default function MealLoggedConfirmationPage() {
 const router = useRouter();
 
 
@@ -29,7 +28,7 @@ useEffect(() => {
         {/* New Account Button */}
         <Pressable
           style={styles.button}
-          onPress={() => router.push('/Log Meal Page')}
+          onPress={() => router.push('/LogMealPage')}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </Pressable>

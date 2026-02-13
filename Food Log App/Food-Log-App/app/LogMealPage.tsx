@@ -1,8 +1,6 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground} from 'react-native';
+import { Text, StyleSheet, ScrollView, Pressable, ImageBackground} from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { useEffect } from 'react';
-
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
@@ -32,7 +30,7 @@ useEffect(() => {
         {/* New Account Button */}
         <Pressable
           style={styles.button}
-          onPress={() => router.push('/Meal Logged Confirmation Page')}
+          onPress={() => router.push('/MealLoggedConfirmationPage')}
         >
           <Text style={styles.buttonText}>Save Meal</Text>
         </Pressable>
