@@ -28,7 +28,7 @@ useEffect(() => {
         {/* New Account Button */}
         <Pressable
           style={styles.button}
-          onPress={() => router.push('/LogMealPage')}
+          onPress={() => router.push('/Home Page')}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </Pressable>
