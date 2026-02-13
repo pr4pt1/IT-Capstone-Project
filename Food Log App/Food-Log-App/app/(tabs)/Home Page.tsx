@@ -1,4 +1,4 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, Image, ImageBackground } from 'react-native';
+import { Text, TextInput, StyleSheet, Pressable, Platform, Image, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 
@@ -25,7 +25,15 @@ export default function WelcomePage() {
           style={styles.logo}
         />
         <Text style={styles.title}>Welcome Back</Text>
-      </ThemedView>
+        </ThemedView>
+          
+                  {/* Log Meal page */}
+                <Pressable
+                  style={styles.button}
+                  onPress={() => router.push('/LogMealPage')}
+                >
+                  <Text style={styles.buttonText}>Log Your meal button</Text>
+                </Pressable> 
     </ThemedView>
     </ImageBackground>
   );
@@ -62,5 +70,21 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     fontFamily: 'Nunito'
+  },
+
+ button: {
+  marginTop: 40,          
+  backgroundColor: '#2b2c2aff',
+  paddingVertical: 15,
+  paddingHorizontal: 40,
+  borderRadius: 10,
+  alignSelf: 'center',
+  alignItems: 'center',
+},
+
+  buttonText: {
+    color: '#b8ff7eff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
