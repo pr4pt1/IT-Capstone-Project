@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
 import { Dropdown } from 'react-native-element-dropdown';
 
 export default function SymptomsScreen() {
+  const router = useRouter();
   const [meal, setMeal] = useState('');
   const [symptoms, setSymptoms] = useState('');
   const [mood, setMood] = useState('');
@@ -37,6 +39,7 @@ export default function SymptomsScreen() {
 
     console.log("Saved Symptoms Entry:", entry);
 
+    router.push('/SymptomsConfirmationPage');
     // TODO: send to backend or local storage
   };
 

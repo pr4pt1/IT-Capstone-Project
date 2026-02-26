@@ -1,83 +1,183 @@
-import { Text, StyleSheet, ScrollView, Pressable, ImageBackground} from 'react-native';
+import React, { useState } from 'react';
+import {Text,StyleSheet,ScrollView,Pressable,ImageBackground,TextInput,View,
+} from 'react-native';
 import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
+type AllergenKeys = 'dairy' | 'nuts' | 'gluten';
+
 export default function LogMealPage() {
-const router = useRouter();
+  const router = useRouter();
 
+  const [mealName, setMealName] = useState<string>('');
+  const [ingredients, setIngredients] = useState<string>('');
+  const [calories, setCalories] = useState<string>('');
+  const [allergens, setAllergens] = useState<Record<AllergenKeys, boolean>>({
+    dairy: false,
+    nuts: false,
+    gluten: false,
+  });
 
-useEffect(() => {
+  const toggleAllergen = (key: AllergenKeys): void => {
+    setAllergens((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
-  }, []);
+  const handleSave = (): void => {
+    const entry = {
+      mealName,
+      ingredients,
+      calories,
+      allergens,
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log('Saved Meal:', entry);
+
+    router.push('/MealLoggedConfirmationPage');
+  };
+
+  const formattedDate: string = new Date().toLocaleString();
 
   return (
-    //Gradient Background
     <ImageBackground
       source={require('@/assets/images/bg.png')}
       style={styles.background}
       resizeMode="cover"
     >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ThemedView style={styles.container}>
+          
+          {/* Title */}
+          <ThemedText type="title" style={styles.title}>
+            Log Your Meal
+          </ThemedText>
 
-  <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-   <ThemedView style={styles.container}>
-    <ThemedText type="title">logo will go here</ThemedText>
-        
-        
-        
-        
-        {/* New Account Button */}
-        <Pressable
-          style={styles.button}
-          onPress={() => router.push('/MealLoggedConfirmationPage')}
-        >
-          <Text style={styles.buttonText}>Save Meal</Text>
-        </Pressable>
+          {/* Date & Time */}
+          <Text style={styles.label}>Date & Time</Text>
+          <View style={styles.box}>
+            <Text>{formattedDate}</Text>
+          </View>
 
-      </ThemedView>
-    </ScrollView>
-  </ImageBackground>
+          {/* Meal Name */}
+          <Text style={styles.label}>Meal Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ex: Grilled Chicken Salad"
+            value={mealName}
+            onChangeText={setMealName}
+          />
+
+          {/* Ingredients */}
+          <Text style={styles.label}>Ingredients</Text>
+          <TextInput
+            style={[styles.input, { height: 80 }]}
+            placeholder="List ingredients..."
+            value={ingredients}
+            onChangeText={setIngredients}
+            multiline
+          />
+
+          {/* Estimated Calories */}
+          <Text style={styles.label}>Estimated Calories</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ex: 450"
+            value={calories}
+            onChangeText={setCalories}
+            keyboardType="numeric"
+          />
+
+          {/* Flag Allergens */}
+          <Text style={styles.label}>Flag Potential Allergens</Text>
+          <View style={styles.allergenRow}>
+            {(['dairy', 'nuts', 'gluten'] as AllergenKeys[]).map((item) => (
+              <Pressable
+                key={item}
+                style={[
+                  styles.allergenButton,
+                  allergens[item] && styles.allergenSelected,
+                ]}
+                onPress={() => toggleAllergen(item)}
+              >
+                <Text style={styles.allergenText}>
+                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
+          {/* Save Button */}
+          <Pressable style={styles.button} onPress={handleSave}>
+            <Text style={styles.buttonText}>Save Meal</Text>
+          </Pressable>
+
+        </ThemedView>
+      </ScrollView>
+    </ImageBackground>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
-
   container: {
     flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 20,
     backgroundColor: 'transparent',
   },
-
+  title: {
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  label: {
+    marginTop: 15,
+    fontWeight: '600',
+  },
+  box: {
+    backgroundColor: '#ffffffaa',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 6,
+  },
   input: {
     width: '100%',
     padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 8,
-    marginTop: 12,
-    backgroundColor: '#fff'
+    marginTop: 6,
+    backgroundColor: '#ffffffaa',
   },
-
+  allergenRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  allergenButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    backgroundColor: '#ffffffaa',
+  },
+  allergenSelected: {
+    backgroundColor: '#2b2c2a',
+  },
+  allergenText: {
+    fontWeight: '600',
+  },
   button: {
-    marginTop: 20,
-    backgroundColor: '#2b2c2aff',
+    marginTop: 30,
+    backgroundColor: '#2b2c2a',
     paddingVertical: 15,
-    paddingHorizontal: 40,
     borderRadius: 10,
     alignItems: 'center',
   },
-
   buttonText: {
-    color: '#b8ff7eff',
-    fontSize: 18,
+    color: '#b8ff7e',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
