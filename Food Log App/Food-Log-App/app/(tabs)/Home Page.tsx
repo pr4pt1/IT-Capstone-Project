@@ -1,4 +1,4 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, Image, ImageBackground } from 'react-native';
+import { Text, TextInput, StyleSheet, Pressable, Platform, Image, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 
@@ -25,24 +25,16 @@ export default function WelcomePage() {
           style={styles.logo}
         />
         <Text style={styles.title}>Welcome Back</Text>
-      </ThemedView>
-        
-      <ThemedView style={styles.cardsSection}>
-
-          <Pressable style={styles.card}>
-            <Text style={styles.cardTitle}>Today's Calories</Text>
-            <Text style={styles.cardValue}>6,240</Text>
-            <Text style={styles.cardSubtitle}>Your fat</Text>
-          </Pressable>
-
-          <Pressable style={styles.card}>
-            <Text style={styles.cardTitle}>Weekly Progress</Text>
-            <Text style={styles.cardSubtitle}>View trends & analytics</Text>
-          </Pressable>
-
         </ThemedView>
-
-      </ThemedView>
+          
+                  {/* Log Meal page */}
+                <Pressable
+                  style={styles.button}
+                  onPress={() => router.push('/LogMealPage')}
+                >
+                  <Text style={styles.buttonText}>Log Your meal button</Text>
+                </Pressable> 
+    </ThemedView>
     </ImageBackground>
   );
 }
@@ -76,44 +68,23 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 32,
-    color: '#1C1C1E',
     fontWeight: 'bold',
     fontFamily: 'Nunito'
   },
 
-  cardsSection: {
-    padding: 10,
-    gap: 20,
-    backgroundColor: 'transparent',
-  },
+ button: {
+  marginTop: 40,          
+  backgroundColor: '#2b2c2aff',
+  paddingVertical: 15,
+  paddingHorizontal: 40,
+  borderRadius: 10,
+  alignSelf: 'center',
+  alignItems: 'center',
+},
 
-  card: {
-    backgroundColor: '#1C1C1E', 
-    padding: 22,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#2C2C2E',
-    shadowColor: '#000',
-    shadowOpacity: 0.4,
-    shadowRadius: 15,
-    elevation: 8,
-  },
-
-  cardTitle: {
+  buttonText: {
+    color: '#b8ff7eff',
     fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginBottom: 8,
-  },
-
-  cardSubtitle: {
-    fontSize: 14,
-    color: '#A1A1A6',
-  },
-
-  cardValue: {
-    fontSize: 34,
-    fontWeight: '700',
-    color: '#636B2F', // modern green accent
+    fontWeight: 'bold',
   },
 });

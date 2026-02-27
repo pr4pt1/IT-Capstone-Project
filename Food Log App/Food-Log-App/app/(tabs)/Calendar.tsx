@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useState } from 'react';
+import { router } from 'expo-router';
 
 function DetailSection({ title }: { title: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -68,7 +69,19 @@ export default function CalendarScreen() {
         <View style={styles.detailsBox}>
           <DetailSection title="Meal Name" />
           <DetailSection title="Ingredients" />
-          <DetailSection title="Logged Symptoms" />
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Logged Symptoms</Text>
+
+              {/* + Button */}
+              <TouchableOpacity
+                onPress={() => router.push('/symptoms')}
+                style={styles.plusButton}
+              >
+                <Text style={styles.plusText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           <DetailSection title="Mood & Severity" />
         </View>
       </ScrollView>
@@ -120,4 +133,24 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 15, fontWeight: '500', color: '#3D4127' },
   sectionToggle: { fontSize: 18, color: '#3D4127' },
   sectionBody: { marginTop: 8, color: '#3D4127' },
+
+  plusButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18, // perfect circle
+    backgroundColor: '#3D4127', // dark green
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+
+  plusText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '700',
+    marginTop: -2,
+  },
 });
