@@ -1,20 +1,32 @@
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-
+import { useNavigation } from "@react-navigation/native";
+import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function SettingsScreen() {
+export default function Settings() {
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.safe}>
+
+      {/* Title */}
       <Text style={styles.title}>Settings</Text>
 
-      <View style={styles.list}>
-        <Link href="notification" asChild>
-          <Pressable style={styles.row}>
-            <Text style={styles.rowText}>Notification Sound</Text>
-          </Pressable>
-        </Link>
-      </View>
+      {/* Personal Info Button */}
+      <Pressable
+        style={styles.row}
+        onPress={() => navigation.navigate("PersonalInfo")}
+      >
+        <Text style={styles.rowText}>Personal Information</Text>
+      </Pressable>
+
+      {/* Notification Button */}
+      <Pressable
+        style={styles.row}
+        onPress={() => navigation.navigate("Notifications")}
+      >
+        <Text style={styles.rowText}>Notifications</Text>
+      </Pressable>
+
     </SafeAreaView>
   );
 }
@@ -28,19 +40,32 @@ const COLORS = {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bgDark, padding: 20 },
-  title: { color: COLORS.inkLight, fontSize: 28, fontWeight: "700", marginBottom: 12 },
-  list: {},
+
+  title: {
+    color: COLORS.inkLight,
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 20,
+  },
+
   row: {
     backgroundColor: COLORS.chip,
     borderRadius: 16,
-    paddingVertical: 16,
+    paddingVertical: 18,
     paddingHorizontal: 16,
     marginBottom: 12,
+
     shadowColor: "#000",
     shadowOpacity: 0.15,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
+
     elevation: 3,
   },
-  rowText: { color: COLORS.accentLight, fontSize: 18, fontWeight: "600" },
+
+  rowText: {
+    color: COLORS.accentLight,
+    fontWeight: "600",
+    fontSize: 18,
+  },
 });
