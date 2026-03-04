@@ -4,6 +4,7 @@ import { Text } from "react-native";
 import { TextInput } from "react-native";
 import { StyleSheet } from "react-native";
 import { Pressable } from "react-native";
+import { Alert } from "react-native";
 
 export default function PersonalInfo() {
     //User info
@@ -11,9 +12,30 @@ export default function PersonalInfo() {
     const [age, setAge] = useState("");
     const [email, setEmail] = useState("");
 
-    //Save user info
     const handleSave = () => {
-        console.log("The following has been saved:", { name, age, phone, email });
+
+        //Check for empty fields
+        if (!email.trim() || !name.trim() || !age.trim()) {
+            Alert.alert("Empty field", "Please enter text in all fields.");
+            return;
+        }
+
+        //Check for valid age
+        const ageNum = Number(age);
+        if (isNaN(ageNum) || ageNum <= 0) {
+            Alert.alert("Invalid field", "Please enter a valid age.");
+            return;
+        }
+
+        //Check for valid email
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(email)) {
+            Alert.alert("Invalid email", "Please enter a valid email address.");
+            return;
+        }
+
+        //Save user info
+        console.log("The following has been saved:", { name, age, email });
         alert("Your info has been saved.");
     };
 
