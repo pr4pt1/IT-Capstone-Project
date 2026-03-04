@@ -1,9 +1,9 @@
-import { useNavigation } from "@react-navigation/native";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from "expo-router";
 
 export default function Settings() {
-  const navigation = useNavigation();
+  const router = useRouter();
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -14,7 +14,7 @@ export default function Settings() {
       {/* Personal Info Button */}
       <Pressable
         style={styles.row}
-        onPress={() => navigation.navigate("Personal Information")}
+        onPress={() => router.push("/PersonalInfo")}
       >
         <Text style={styles.rowText}>Personal Information</Text>
       </Pressable>
@@ -22,7 +22,7 @@ export default function Settings() {
       {/* Notification Button */}
       <Pressable
         style={styles.row}
-        onPress={() => navigation.navigate("Notifications")}
+        onPress={() => router.push("/Notifications")}
       >
         <Text style={styles.rowText}>Notifications</Text>
       </Pressable>
@@ -30,9 +30,9 @@ export default function Settings() {
       {/* Text Size Button */}
       <Pressable
         style={styles.row}
-        onPress={() => navigation.navigate("Text Size")}
+        onPress={() => router.push("/TextSize")}
       >
-        <Text style={styles.rowText}>Personal Information</Text>
+        <Text style={styles.rowText}>Text Size</Text>
       </Pressable>
 
     </SafeAreaView>
