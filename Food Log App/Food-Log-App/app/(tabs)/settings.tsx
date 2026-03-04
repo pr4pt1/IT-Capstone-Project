@@ -67,5 +67,5 @@ const styles = StyleSheet.create({
     color: COLORS.accentLight,
     fontWeight: "600",
     fontSize: 18,
-  },
-});
+  }
+}),

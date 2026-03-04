@@ -9,7 +9,6 @@ export default function PersonalInfo() {
     //User info
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
-    const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
 
     //Save user info
@@ -43,7 +42,6 @@ export default function PersonalInfo() {
                 onChangeText={setAge}
                 keyboardType="numeric"
             />
-
 
             {/* Email */}
             <Text style={styles.label}>Email</Text>
