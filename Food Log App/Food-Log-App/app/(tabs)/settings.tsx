@@ -14,7 +14,7 @@ export default function Settings() {
       {/* Personal Info Button */}
       <Pressable
         style={styles.row}
-        onPress={() => navigation.navigate("PersonalInfo")}
+        onPress={() => navigation.navigate("Personal Information")}
       >
         <Text style={styles.rowText}>Personal Information</Text>
       </Pressable>
@@ -25,6 +25,14 @@ export default function Settings() {
         onPress={() => navigation.navigate("Notifications")}
       >
         <Text style={styles.rowText}>Notifications</Text>
+      </Pressable>
+
+      {/* Text Size Button */}
+      <Pressable
+        style={styles.row}
+        onPress={() => navigation.navigate("Text Size")}
+      >
+        <Text style={styles.rowText}>Personal Information</Text>
       </Pressable>
 
     </SafeAreaView>
