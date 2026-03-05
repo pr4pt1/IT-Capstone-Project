@@ -1,7 +1,26 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const moodEmojiMap: Record<string, string> = {
+  happy: "😊",
+  neutral: "😐",
+  uneasy: "😕",
+  painful: "🤢",
+  severe: "😖",
+};
+
+type SymptomEntry = {
+  date: string;
+  symptoms: string | string[];   // ← allows string OR array
+  notes?: string;
+  meal?: string;
+  mood?: string;
+  severity?: number;
+  timestamp?: string; 
+};
 
 function DetailSection({ title }: { title: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -20,7 +39,38 @@ function DetailSection({ title }: { title: string }) {
 }
 
 export default function CalendarScreen() {
-  const [selectedDate, setSelectedDate] = useState('2025-12-1');
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split('T')[0]
+);
+
+  // All saved symptoms (typed)
+  const [allSymptoms, setAllSymptoms] = useState<SymptomEntry[]>([]);
+
+  console.log("ALL SYMPTOMS:", allSymptoms);
+  console.log("SELECTED DATE:", selectedDate);
+
+  // Symptoms for the selected date (typed)
+  const [symptomsForDay, setSymptomsForDay] = useState<SymptomEntry[]>([]);
+
+  // Load symptoms from storage
+useEffect(() => {
+    const loadSymptoms = async () => {
+      const stored = await AsyncStorage.getItem('symptomEntries');
+      if (stored) {
+        setAllSymptoms(JSON.parse(stored));
+      }
+    };
+
+    loadSymptoms();
+  }, []);
+
+  // Filter symptoms when date changes
+  useEffect(() => {
+    const filtered = allSymptoms.filter(
+      (entry) => entry.date === selectedDate
+    );
+    setSymptomsForDay(filtered);
+  }, [selectedDate, allSymptoms]);
 
   return (
     <ImageBackground
@@ -81,11 +131,64 @@ export default function CalendarScreen() {
                 <Text style={styles.plusText}>+</Text>
               </TouchableOpacity>
             </View>
+
+            {/* Symptoms List */}
+              {symptomsForDay.length === 0 ? (
+                <Text style={styles.emptyText}>
+                  No symptoms logged for this day.
+                </Text>
+              ) : (
+                symptomsForDay.map((entry, index) => (
+                  <View key={index} style={styles.symptomItem}>
+                    <Text style={styles.symptomText}>
+                      {Array.isArray(entry.symptoms)
+                        ? entry.symptoms.join(', ')
+                        : entry.symptoms}
+                    </Text>
+
+                    {entry.notes ? (
+                      <Text style={styles.notesText}>
+                        Notes: {entry.notes}
+                      </Text>
+                    ) : null}
+                  </View>
+                ))
+              )}
           </View>
-          <DetailSection title="Mood & Severity" />
-        </View>
-      </ScrollView>
-    </View>
+
+            {/* Mood & Severity */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Mood & Severity</Text>
+              </View>
+
+              {symptomsForDay.length === 0 ? (
+                <Text style={styles.emptyText}>
+                  No mood or severity logged.
+                </Text>
+              ) : (
+                symptomsForDay.map((entry, index) => (
+                  <View key={index} style={styles.symptomItem}>
+                    {/* Mood */}
+                    {entry.mood ? (
+                      <Text style={styles.symptomText}>
+                        Mood: {moodEmojiMap[entry.mood]} {entry.mood}
+                      </Text>
+                    ) : null}
+
+                    {/* Severity */}
+                    {entry.severity !== undefined ? (
+                      <Text style={styles.symptomText}>
+                        Severity: {entry.severity}
+                      </Text>
+                    ) : null}
+                  </View>
+                ))
+              )}
+            </View>
+          </View>
+        </ScrollView>
+      </View>
     </ImageBackground>
   );
 }
@@ -152,5 +255,30 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     marginTop: -2,
+  },
+
+  emptyText: {
+    color: '#3D4127',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
+
+  symptomItem: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+
+  symptomText: {
+    color: '#3D4127',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+
+  notesText: {
+    color: '#3D4127',
+    marginTop: 4,
+    fontSize: 14,
   },
 });

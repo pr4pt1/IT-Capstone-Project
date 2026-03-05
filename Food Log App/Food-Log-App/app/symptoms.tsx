@@ -34,13 +34,14 @@ export default function SymptomsScreen() {
       mood,
       severity,
       notes,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString().split('T')[0],
     };
 
-    console.log("Saved Symptoms Entry:", entry);
-
-    router.push('/SymptomsConfirmationPage');
-    // TODO: send to backend or local storage
+    // Pass data to confirmation page
+    router.push({
+      pathname: '/symptoms-confirmation-page',
+      params: { data: JSON.stringify(entry) },
+    });
   };
 
   return (
