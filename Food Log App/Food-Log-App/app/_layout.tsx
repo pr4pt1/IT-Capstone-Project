@@ -7,10 +7,10 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { useFonts } from 'expo-font';
 
-
+import { FontSizeProvider } from "../components/FontSize"; //Added by Mary
 
 export const unstable_settings = {
-  anchor : '(tabs)',
+  anchor: '(tabs)',
 };
 
 
@@ -27,16 +27,19 @@ export default function RootLayout() {
   // Wait until fonts are loaded before rendering
   if (!fontsLoaded) return null;
 
-    return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: true }}>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="MealLoggedConfirmationPage" options={{ headerShown: false }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+  //Added by Mary - Font Size Provider
+  return (
+    <FontSizeProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack screenOptions={{ headerShown: true }}>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="TextSize" options={{ headerShown: true }} /> {/* Added by Mary */}
+          <Stack.Screen name="MealLoggedConfirmationPage" options={{ headerShown: false }} />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </FontSizeProvider>
   );
 }
 
-  
