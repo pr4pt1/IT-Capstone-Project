@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
 import { Dropdown } from 'react-native-element-dropdown';
 
+
 export default function SymptomsScreen() {
   const router = useRouter();
   const [meal, setMeal] = useState('');
