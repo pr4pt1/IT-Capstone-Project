@@ -19,6 +19,14 @@ export default function Settings() {
         <Text style={styles.rowText}>Personal Information</Text>
       </Pressable>
 
+      {/* Privacy & Security Button */}
+      <Pressable
+        style={styles.row}
+        onPress={() => router.push("/PriAndSec")}
+      >
+        <Text style={styles.rowText}>Privacy & Security</Text>
+      </Pressable>
+
       {/* Notification Button */}
       <Pressable
         style={styles.row}
