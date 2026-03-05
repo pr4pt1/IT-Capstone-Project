@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
@@ -14,204 +14,250 @@ const moodEmojiMap: Record<string, string> = {
 
 type SymptomEntry = {
   date: string;
-  symptoms: string | string[];   // ← allows string OR array
+  symptoms: string | string[];
   notes?: string;
   meal?: string;
   mood?: string;
   severity?: number;
-  timestamp?: string; 
 };
 
-function DetailSection({ title }: { title: string }) {
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <View style={styles.section}>
-      <TouchableOpacity
-        onPress={() => setExpanded(!expanded)}
-        style={styles.sectionHeader}
-      >
-        <Text style={styles.sectionTitle}>{title}</Text>
-        <Text style={styles.sectionToggle}>{expanded ? '-' : '+'}</Text>
-      </TouchableOpacity>
-      {expanded && <Text style={styles.sectionBody}>Details go here...</Text>}
-    </View>
-  );
-}
+type MealEntry = {
+  date: string;
+  mealName: string;
+  ingredients?: string;
+  calories?: string;
+  allergens?: {
+    dairy?: boolean;
+    nuts?: boolean;
+    gluten?: boolean;
+  };
+};
 
 export default function CalendarScreen() {
+
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
-);
+  );
 
-  // All saved symptoms (typed)
   const [allSymptoms, setAllSymptoms] = useState<SymptomEntry[]>([]);
+  const [allMeals, setAllMeals] = useState<MealEntry[]>([]);
 
-  console.log("ALL SYMPTOMS:", allSymptoms);
-  console.log("SELECTED DATE:", selectedDate);
-
-  // Symptoms for the selected date (typed)
   const [symptomsForDay, setSymptomsForDay] = useState<SymptomEntry[]>([]);
+  const [mealsForDay, setMealsForDay] = useState<MealEntry[]>([]);
 
-  // Load symptoms from storage
-useEffect(() => {
-    const loadSymptoms = async () => {
-      const stored = await AsyncStorage.getItem('symptomEntries');
-      if (stored) {
-        setAllSymptoms(JSON.parse(stored));
-      }
+  useEffect(() => {
+    const loadData = async () => {
+      const storedSymptoms = await AsyncStorage.getItem('symptomEntries');
+      if (storedSymptoms) setAllSymptoms(JSON.parse(storedSymptoms));
+
+      const storedMeals = await AsyncStorage.getItem('mealEntries');
+      if (storedMeals) setAllMeals(JSON.parse(storedMeals));
     };
-
-    loadSymptoms();
+    loadData();
   }, []);
 
-  // Filter symptoms when date changes
   useEffect(() => {
-    const filtered = allSymptoms.filter(
-      (entry) => entry.date === selectedDate
+    setSymptomsForDay(allSymptoms.filter(entry => entry.date === selectedDate));
+    setMealsForDay(allMeals.filter(meal => meal.date === selectedDate));
+  }, [selectedDate, allSymptoms, allMeals]);
+
+  // Clear Calendar function with confirmation
+  const clearCalendarData = () => {
+    Alert.alert(
+      "Clear Calendar",
+      "Are you sure you want to delete all calendar data? This cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Yes, Clear", 
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('symptomEntries');
+              await AsyncStorage.removeItem('mealEntries');
+
+              setAllSymptoms([]);
+              setAllMeals([]);
+              setSymptomsForDay([]);
+              setMealsForDay([]);
+
+              alert('Calendar data cleared!');
+            } catch (error) {
+              console.error('Error clearing calendar data:', error);
+            }
+          }
+        }
+      ]
     );
-    setSymptomsForDay(filtered);
-  }, [selectedDate, allSymptoms]);
+  };
 
   return (
     <ImageBackground
-          source={require('@/assets/images/bg.png')}
-          style={styles.background}
-          resizeMode="contain"
-        >
-    <View style={styles.container}>
-      {/* Page Title */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Calendar History</Text>
-      </View>
+      source={require('@/assets/images/bg.png')}
+      style={styles.background}
+      resizeMode="contain"
+    >
+      <View style={styles.container}>
 
-      {/* Calendar */}
-      <Calendar
-        current={selectedDate}
-        onDayPress={(day) => setSelectedDate(day.dateString)}
-        markedDates={{
-          [selectedDate]: {
-            selected: true,
-            selectedColor: '#636B2F',
-            selectedTextColor: '#FFFFFF',
-          },
-        }}
-        theme={{
-          backgroundColor: '#BAC095',
-          calendarBackground: '#BAC095',
-          textSectionTitleColor: '#3D4127',
-          selectedDayBackgroundColor: '#636B2F',
-          selectedDayTextColor: '#FFFFFF',
-          todayTextColor: '#3D4127',
-          dayTextColor: '#3D4127',
-          arrowColor: '#3D4127',
-          monthTextColor: '#3D4127',
-          textDayFontWeight: '500',
-          textMonthFontWeight: '700',
-          textDayHeaderFontWeight: '600',
-        }}
-      />
+        {/* HEADER WITH CLEAR BUTTON */}
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Calendar History</Text>
+          <TouchableOpacity onPress={clearCalendarData} style={styles.clearButton}>
+            <Text style={styles.clearButtonText}>Clear Calendar</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Title above the box */}
-      <Text style={styles.detailsTitle}>Selected Date Details</Text>
+        {/* CALENDAR */}
+        <Calendar
+          current={selectedDate}
+          onDayPress={(day) => setSelectedDate(day.dateString)}
+          markedDates={{
+            [selectedDate]: {
+              selected: true,
+              selectedColor: '#636B2F',
+              selectedTextColor: '#FFFFFF',
+            },
+          }}
+          theme={{
+            backgroundColor: '#BAC095',
+            calendarBackground: '#BAC095',
+            textSectionTitleColor: '#3D4127',
+            selectedDayBackgroundColor: '#636B2F',
+            selectedDayTextColor: '#FFFFFF',
+            todayTextColor: '#3D4127',
+            dayTextColor: '#3D4127',
+            arrowColor: '#3D4127',
+            monthTextColor: '#3D4127',
+          }}
+        />
 
-      {/* Details box */}
-      <ScrollView style={styles.details}>
-        <View style={styles.detailsBox}>
-          <DetailSection title="Meal Name" />
-          <DetailSection title="Ingredients" />
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Logged Symptoms</Text>
+        <Text style={styles.detailsTitle}>Selected Date Details</Text>
 
-              {/* + Button */}
-              <TouchableOpacity
-                onPress={() => router.push('/symptoms')}
-                style={styles.plusButton}
-              >
-                <Text style={styles.plusText}>+</Text>
-              </TouchableOpacity>
+        <ScrollView style={styles.details}>
+          <View style={styles.detailsBox}>
+
+            {/* MEALS */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Meals</Text>
+              </View>
+              {mealsForDay.length === 0 ? (
+                <Text style={styles.emptyText}>No meals logged for this day.</Text>
+              ) : (
+                mealsForDay.map((meal, index) => (
+                  <View key={index} style={styles.symptomItem}>
+                    <Text style={styles.symptomText}>{meal.mealName}</Text>
+                  </View>
+                ))
+              )}
             </View>
 
-            {/* Symptoms List */}
+            {/* INGREDIENTS */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Ingredients</Text>
+              </View>
+              {mealsForDay.length === 0 ? (
+                <Text style={styles.emptyText}>No ingredients logged for this day.</Text>
+              ) : (
+                mealsForDay.map((meal, index) => (
+                  <View key={index} style={styles.symptomItem}>
+                    <Text style={styles.symptomText}>
+                      {meal.ingredients ?? "No ingredients listed"}
+                    </Text>
+                  </View>
+                ))
+              )}
+            </View>
+
+            {/* SYMPTOMS */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Logged Symptoms</Text>
+                <TouchableOpacity
+                  onPress={() => router.push('/symptoms')}
+                  style={styles.plusButton}
+                >
+                  <Text style={styles.plusText}>+</Text>
+                </TouchableOpacity>
+              </View>
               {symptomsForDay.length === 0 ? (
-                <Text style={styles.emptyText}>
-                  No symptoms logged for this day.
-                </Text>
+                <Text style={styles.emptyText}>No symptoms logged for this day.</Text>
               ) : (
                 symptomsForDay.map((entry, index) => (
                   <View key={index} style={styles.symptomItem}>
                     <Text style={styles.symptomText}>
-                      {Array.isArray(entry.symptoms)
-                        ? entry.symptoms.join(', ')
-                        : entry.symptoms}
+                      {Array.isArray(entry.symptoms) ? entry.symptoms.join(', ') : entry.symptoms}
                     </Text>
-
-                    {entry.notes ? (
-                      <Text style={styles.notesText}>
-                        Notes: {entry.notes}
-                      </Text>
-                    ) : null}
-                  </View>
-                ))
-              )}
-          </View>
-
-            {/* Mood & Severity */}
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Mood & Severity</Text>
-              </View>
-
-              {symptomsForDay.length === 0 ? (
-                <Text style={styles.emptyText}>
-                  No mood or severity logged.
-                </Text>
-              ) : (
-                symptomsForDay.map((entry, index) => (
-                  <View key={index} style={styles.symptomItem}>
-                    {/* Mood */}
-                    {entry.mood ? (
-                      <Text style={styles.symptomText}>
-                        Mood: {moodEmojiMap[entry.mood]} {entry.mood}
-                      </Text>
-                    ) : null}
-
-                    {/* Severity */}
-                    {entry.severity !== undefined ? (
-                      <Text style={styles.symptomText}>
-                        Severity: {entry.severity}
-                      </Text>
-                    ) : null}
+                    {entry.notes && <Text style={styles.notesText}>Notes: {entry.notes}</Text>}
                   </View>
                 ))
               )}
             </View>
+
+            {/* MOOD */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Mood & Severity</Text>
+              </View>
+              {symptomsForDay.length === 0 ? (
+                <Text style={styles.emptyText}>No mood or severity logged.</Text>
+              ) : (
+                symptomsForDay.map((entry, index) => (
+                  <View key={index} style={styles.symptomItem}>
+                    {entry.mood && <Text style={styles.symptomText}>Mood: {moodEmojiMap[entry.mood]} {entry.mood}</Text>}
+                    {entry.severity !== undefined && <Text style={styles.symptomText}>Severity: {entry.severity}</Text>}
+                  </View>
+                ))
+              )}
+            </View>
+
           </View>
         </ScrollView>
+
       </View>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
 
-  container: { flex: 1, backgroundColor: '#BAC095' }, //for gradient change value to 'transparent'
+  background: { flex: 1 },
+
+  container: { flex: 1, backgroundColor: '#BAC095' },
 
   header: {
-    padding: 25,
-    alignItems: 'center',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  paddingHorizontal: 25,
+  paddingTop: 50,      
+  paddingBottom: 12,   
   },
+
   headerText: {
-    color: '#3D4127',
+    color: '#21221e',
     fontSize: 20,
     fontWeight: 'bold',
-    padding: 30,
+    paddingRight: 10,
+  },
+
+ clearButton: {
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  backgroundColor: '#3D4127',
+  borderRadius: 8,
+  marginTop: 10,       
+},
+
+  clearButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 14,
   },
 
   details: { paddingHorizontal: 16, paddingTop: 8 },
+
   detailsTitle: {
     fontSize: 16,
     fontWeight: '600',
@@ -222,39 +268,38 @@ const styles = StyleSheet.create({
   },
 
   detailsBox: {
-    backgroundColor: 'rgba(99, 107, 47, 0.5)', // 636B2F with 50% opacity
+    backgroundColor: 'rgba(99, 107, 47, 0.5)',
     borderRadius: 8,
     padding: 16,
   },
 
   section: { borderTopWidth: 1, borderTopColor: '#ccc', paddingVertical: 8 },
+
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+
   sectionTitle: { fontSize: 15, fontWeight: '500', color: '#3D4127' },
+
   sectionToggle: { fontSize: 18, color: '#3D4127' },
+
   sectionBody: { marginTop: 8, color: '#3D4127' },
 
   plusButton: {
     width: 36,
     height: 36,
-    borderRadius: 18, // perfect circle
-    backgroundColor: '#3D4127', // dark green
+    borderRadius: 18,
+    backgroundColor: '#3D4127',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
   },
 
   plusText: {
     color: '#FFFFFF',
     fontSize: 24,
     fontWeight: '700',
-    marginTop: -2,
   },
 
   emptyText: {
@@ -281,4 +326,5 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 14,
   },
+
 });

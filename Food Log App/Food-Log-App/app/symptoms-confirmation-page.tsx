@@ -37,40 +37,35 @@ const entry: IncomingEntry | null = params.data
   : null;
 
 useEffect(() => {
-    const saveToStorage = async () => {
-      if (!entry) return;
+  const saveToStorage = async () => {
+    if (!entry) return;
 
-      // Load existing entries
-      const stored = await AsyncStorage.getItem('symptomEntries');
-      const existing: SymptomEntry[] = stored ? JSON.parse(stored) : [];
+    const stored = await AsyncStorage.getItem('symptomEntries');
+    const existing: SymptomEntry[] = stored ? JSON.parse(stored) : [];
 
-      // Convert symptoms string → array
-      const symptomsArray =
-        typeof entry.symptoms === 'string'
-          ? entry.symptoms.split(',').map((symptom) => symptom.trim())
-          : entry.symptoms;
+    const symptomsArray =
+      typeof entry.symptoms === 'string'
+        ? entry.symptoms.split(',').map((symptom) => symptom.trim())
+        : entry.symptoms;
 
-      const newEntry: SymptomEntry = {
-        date: entry.timestamp,
-        symptoms: symptomsArray,
-        notes: entry.notes,
-        meal: entry.meal,
-        mood: entry.mood,
-        severity: entry.severity,
-      };
-
-      console.log("ENTRY BEING SAVED:", newEntry);
-
-      // Save updated list
-      await AsyncStorage.setItem(
-        'symptomEntries',
-        JSON.stringify([...existing, newEntry])
-      );
+    const newEntry: SymptomEntry = {
+      date: entry.timestamp,
+      symptoms: symptomsArray,
+      notes: entry.notes,
+      meal: entry.meal,
+      mood: entry.mood,
+      severity: entry.severity,
+      timestamp: new Date().toISOString(),
     };
 
-    saveToStorage();
-  }, []);
+    await AsyncStorage.setItem(
+      'symptomEntries',
+      JSON.stringify([...existing, newEntry])
+    );
+  };
 
+  saveToStorage();
+}, [entry]);
   return (
     //Gradient Background
     <ImageBackground
