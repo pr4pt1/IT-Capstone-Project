@@ -1,6 +1,5 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground } from 'react-native';
+import { Text, StyleSheet, ScrollView, Pressable, ImageBackground, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -15,7 +14,11 @@ export default function WelcomePage() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Welcome to</Text>
         <Text style={styles.title}>The Food Log</Text>
-
+      <Image
+        source={require('@/assets/images/ourlogo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
         <Pressable
           style={styles.button}
           onPress={() => router.push('/Login Page')}
@@ -48,7 +51,7 @@ const styles = StyleSheet.create({
 
   button: {
     marginTop: 20,
-    backgroundColor: '#2b2c2aff',
+    backgroundColor: '#636B2F',
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 10,
@@ -56,9 +59,15 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: '#b8ff7eff',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'Nunito'
   },
+
+  logo: {
+  width: 280,
+  height: 280,
+  marginVertical: 20,
+},
 });

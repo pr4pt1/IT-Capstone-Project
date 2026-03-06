@@ -174,13 +174,13 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 30,
-    backgroundColor: '#2b2c2a',
+    backgroundColor: '#636B2F',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#b8ff7e',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
