@@ -138,70 +138,71 @@ export default function CalendarScreen() {
           <View style={styles.detailsBox}>
 
             {/* MEALS */}
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Meals</Text>
-              </View>
+<View style={styles.section}>
+  <View style={styles.sectionHeader}>
+    <Text style={styles.sectionTitle}>Meals Logged</Text>
 
-              {mealsForDay.length === 0 ? (
-                <Text style={styles.emptyText}>No meals logged for this day.</Text>
-              ) : (
-                mealsForDay.map((meal, index) => (
-                  <View key={index} style={styles.symptomItem}>
+    <TouchableOpacity
+      onPress={() => router.push('/LogMealPage')}
+      style={styles.plusButton}
+    >
+      <Text style={styles.plusText}>+</Text>
+    </TouchableOpacity>
 
-                    {/* Meal Name */}
-                    <Text style={styles.symptomText}>{meal.mealName}</Text>
+  </View>
 
-                    {/* Date & Time */}
-                    <Text style={styles.notesText}>
-                      {new Date(meal.date).toLocaleString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </Text>
+  {mealsForDay.length === 0 ? (
+    <Text style={styles.emptyText}>No meals logged for this day.</Text>
+  ) : (
+    mealsForDay.map((meal, index) => (
+      <View key={index} style={styles.symptomItem}>
 
-                    {/* Calories */}
-                    {meal.calories && (
-                      <Text style={styles.notesText}>Calories: {meal.calories}</Text>
-                    )}
+        {/* Meal Name */}
+        <Text style={styles.symptomText}>{meal.mealName}</Text>
 
-                    {/* Allergens */}
-                    {meal.allergens && (
-                      <Text style={styles.notesText}>
-                        Allergens:{" "}
-                        {[
-                          meal.allergens.dairy ? "Dairy" : null,
-                          meal.allergens.nuts ? "Nuts" : null,
-                          meal.allergens.gluten ? "Gluten" : null,
-                        ].filter(Boolean).join(", ") || "None"}
-                      </Text>
-                    )}
+        {/* Date & Time */}
+        <Text style={styles.notesText}>
+          {new Date(meal.date).toLocaleString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </Text>
 
-                  </View>
-                ))
-              )}
-            </View>
+        {/* Calories */}
+        {meal.calories && (
+          <Text style={styles.notesText}>
+            Calories: {meal.calories}
+          </Text>
+        )}
 
-            {/* INGREDIENTS */}
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Ingredients</Text>
-              </View>
-              {mealsForDay.length === 0 ? (
-                <Text style={styles.emptyText}>No ingredients logged for this day.</Text>
-              ) : (
-                mealsForDay.map((meal, index) => (
-                  <View key={index} style={styles.symptomItem}>
-                    <Text style={styles.symptomText}>
-                      {meal.ingredients ?? "No ingredients listed"}
-                    </Text>
-                  </View>
-                ))
-              )}
-            </View>
+        {/* Allergens */}
+        {meal.allergens && (
+          <Text style={styles.notesText}>
+            Allergens:{" "}
+            {[
+              meal.allergens.dairy ? "Dairy" : null,
+              meal.allergens.nuts ? "Nuts" : null,
+              meal.allergens.gluten ? "Gluten" : null,
+            ]
+              .filter(Boolean)
+              .join(", ") || "None"}
+          </Text>
+        )}
+
+        {/* Ingredients */}
+        {meal.ingredients && (
+          <Text style={styles.notesText}>
+            Ingredients: {meal.ingredients}
+          </Text>
+        )}
+
+      </View>
+    ))
+  )}
+          </View>
 
             {/* SYMPTOMS */}
             <View style={styles.section}>
