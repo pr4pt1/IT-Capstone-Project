@@ -22,15 +22,11 @@ type SymptomEntry = {
 };
 
 type MealEntry = {
-  date: string;
+  date: string; // full timestamp
   mealName: string;
   ingredients?: string;
   calories?: string;
-  allergens?: {
-    dairy?: boolean;
-    nuts?: boolean;
-    gluten?: boolean;
-  };
+  allergens?: { dairy?: boolean; nuts?: boolean; gluten?: boolean };
 };
 
 export default function CalendarScreen() {
@@ -56,12 +52,17 @@ export default function CalendarScreen() {
     loadData();
   }, []);
 
+  // Filter symptoms and meals for selected date
   useEffect(() => {
     setSymptomsForDay(allSymptoms.filter(entry => entry.date === selectedDate));
-    setMealsForDay(allMeals.filter(meal => meal.date === selectedDate));
+
+    setMealsForDay(allMeals.filter(meal => {
+      const mealDate = new Date(meal.date).toISOString().split('T')[0];
+      return mealDate === selectedDate;
+    }));
   }, [selectedDate, allSymptoms, allMeals]);
 
-  // Clear Calendar function with confirmation
+  // Clear Calendar function
   const clearCalendarData = () => {
     Alert.alert(
       "Clear Calendar",
@@ -141,12 +142,44 @@ export default function CalendarScreen() {
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>Meals</Text>
               </View>
+
               {mealsForDay.length === 0 ? (
                 <Text style={styles.emptyText}>No meals logged for this day.</Text>
               ) : (
                 mealsForDay.map((meal, index) => (
                   <View key={index} style={styles.symptomItem}>
+
+                    {/* Meal Name */}
                     <Text style={styles.symptomText}>{meal.mealName}</Text>
+
+                    {/* Date & Time */}
+                    <Text style={styles.notesText}>
+                      {new Date(meal.date).toLocaleString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </Text>
+
+                    {/* Calories */}
+                    {meal.calories && (
+                      <Text style={styles.notesText}>Calories: {meal.calories}</Text>
+                    )}
+
+                    {/* Allergens */}
+                    {meal.allergens && (
+                      <Text style={styles.notesText}>
+                        Allergens:{" "}
+                        {[
+                          meal.allergens.dairy ? "Dairy" : null,
+                          meal.allergens.nuts ? "Nuts" : null,
+                          meal.allergens.gluten ? "Gluten" : null,
+                        ].filter(Boolean).join(", ") || "None"}
+                      </Text>
+                    )}
+
                   </View>
                 ))
               )}

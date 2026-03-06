@@ -19,12 +19,12 @@ useEffect(() => {
     const existing = stored ? JSON.parse(stored) : [];
 
     const newEntry = {
-      date: entry.timestamp.split('T')[0],
-      mealName: entry.mealName,
-      ingredients: entry.ingredients,
-      calories: entry.calories,
-      allergens: entry.allergens,
-    };
+  date: entry.timestamp, // full timestamp
+  mealName: entry.mealName,
+  ingredients: entry.ingredients,
+  calories: entry.calories,
+  allergens: entry.allergens,
+};
 
     await AsyncStorage.setItem(
       'mealEntries',
@@ -50,7 +50,7 @@ useEffect(() => {
         {/* New Account Button */}
         <Pressable
           style={styles.button}
-          onPress={() => router.push('/Home Page')}
+          onPress={() => router.push('/Calendar')}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </Pressable>
