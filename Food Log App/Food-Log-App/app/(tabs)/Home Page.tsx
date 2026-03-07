@@ -1,9 +1,4 @@
-import {
-  StyleSheet,
-  ScrollView,
-  Pressable,
-} from 'react-native';
-
+import {Text, TextInput, StyleSheet, ScrollView, Pressable, Platform, Image, ImageBackground} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';

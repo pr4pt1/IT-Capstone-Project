@@ -1,4 +1,4 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground} from 'react-native';
+import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground, Image} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
@@ -61,8 +61,11 @@ export default function CreateAccountScreen() {
       <ThemedView style={styles.container}>
 
         <ThemedText type="title">Create Your Account</ThemedText>
-        <ThemedText type="title">logo will go here</ThemedText>
-
+              <Image
+                source={require('@/assets/images/ourlogo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
         {/* Input fields */}
         <TextInput 
           placeholder="Name"
@@ -151,7 +154,7 @@ const styles = StyleSheet.create({
 
   button: {
     marginTop: 20,
-    backgroundColor: '#2b2c2aff',
+    backgroundColor: '#636B2F',
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 10,
@@ -159,10 +162,16 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: '#b8ff7eff',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
+  logo: {
+  width: 240,
+  height: 240,
+},
+
 });
 
 

@@ -1,4 +1,4 @@
-import { Text,  StyleSheet,  ScrollView, Pressable,  ImageBackground} from 'react-native';
+import { Text,  StyleSheet,  ScrollView, Pressable,  ImageBackground, Image} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -19,12 +19,12 @@ useEffect(() => {
     const existing = stored ? JSON.parse(stored) : [];
 
     const newEntry = {
-      date: entry.timestamp.split('T')[0],
-      mealName: entry.mealName,
-      ingredients: entry.ingredients,
-      calories: entry.calories,
-      allergens: entry.allergens,
-    };
+  date: entry.timestamp, // full timestamp
+  mealName: entry.mealName,
+  ingredients: entry.ingredients,
+  calories: entry.calories,
+  allergens: entry.allergens,
+};
 
     await AsyncStorage.setItem(
       'mealEntries',
@@ -45,12 +45,18 @@ useEffect(() => {
 
   <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
    <ThemedView style={styles.container}>
-    <ThemedText type="title">logo will go here</ThemedText>
-    <ThemedText type="title">Meal Logged <Ionicons name="checkmark" size={32} color="green" /></ThemedText>
+        <Image
+          source={require('@/assets/images/ourlogo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+    <   ThemedText type="title" style={styles.title}>
+      Meal Logged <Ionicons name="checkmark" size={32} color="green" />
+        </ThemedText>
         {/* New Account Button */}
         <Pressable
           style={styles.button}
-          onPress={() => router.push('/Home Page')}
+          onPress={() => router.push('/Calendar')}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </Pressable>
@@ -88,7 +94,7 @@ const styles = StyleSheet.create({
 
   button: {
     marginTop: 20,
-    backgroundColor: '#2b2c2aff',
+    backgroundColor: '#636B2F',
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 10,
@@ -96,8 +102,18 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    color: '#b8ff7eff',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
+  logo: {
+  width: 280,
+  height: 280,
+},
+
+title: {
+  lineHeight: 40,
+  marginBottom: 10,
+},
 });
