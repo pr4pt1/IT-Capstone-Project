@@ -1,18 +1,71 @@
 import { Text,  StyleSheet,  ScrollView, Pressable,  ImageBackground} from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
+// Type for saved entries
+type SymptomEntry = {
+  date: string;
+  symptoms: string | string[];
+  notes?: string;
+  meal?: string;
+  mood?: string;
+  severity?: number;
+  timestamp?: string;
+};
+
+type IncomingEntry = {
+  meal: string;
+  symptoms: string;
+  mood: string;
+  severity: number;
+  notes: string;
+  timestamp: string; // <-- THIS is the date coming from Symptoms page
+};
+
 export default function MealLoggedConfirmationPage() {
 const router = useRouter();
+const params = useLocalSearchParams();
+console.log("PARAMS RECEIVED:", params);
 
+// Parse the data passed from symptoms.tsx
+const entry: IncomingEntry | null = params.data
+  ? JSON.parse(params.data as string)
+  : null;
 
 useEffect(() => {
+  const saveToStorage = async () => {
+    if (!entry) return;
 
-  }, []);
+    const stored = await AsyncStorage.getItem('symptomEntries');
+    const existing: SymptomEntry[] = stored ? JSON.parse(stored) : [];
 
+    const symptomsArray =
+      typeof entry.symptoms === 'string'
+        ? entry.symptoms.split(',').map((symptom) => symptom.trim())
+        : entry.symptoms;
+
+    const newEntry: SymptomEntry = {
+      date: entry.timestamp,
+      symptoms: symptomsArray,
+      notes: entry.notes,
+      meal: entry.meal,
+      mood: entry.mood,
+      severity: entry.severity,
+      timestamp: new Date().toISOString(),
+    };
+
+    await AsyncStorage.setItem(
+      'symptomEntries',
+      JSON.stringify([...existing, newEntry])
+    );
+  };
+
+  saveToStorage();
+}, [entry]);
   return (
     //Gradient Background
     <ImageBackground
@@ -32,14 +85,11 @@ useEffect(() => {
         >
           <Text style={styles.buttonText}>Continue</Text>
         </Pressable>
-
       </ThemedView>
     </ScrollView>
   </ImageBackground>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   background: {
@@ -52,16 +102,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     backgroundColor: 'transparent',
-  },
-
-  input: {
-    width: '100%',
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginTop: 12,
-    backgroundColor: '#fff'
   },
 
   button: {

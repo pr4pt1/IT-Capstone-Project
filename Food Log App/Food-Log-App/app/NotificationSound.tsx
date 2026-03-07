@@ -1,193 +1,269 @@
-import React, { useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Switch,
-  SafeAreaView,
-} from 'react-native';
-import { useRouter } from 'expo-router';
+import { useState } from "react";
+import { Text, StyleSheet, Pressable, Alert, ScrollView, View, ImageBackground } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from "expo-router";
+import Slider from '@react-native-community/slider';
 
-type Tone = 'Breeze' | 'Ripple' | 'Chime' | 'Bloom';
+type ToneKeys = 'Breeze' | 'Ripple' | 'Chime' | 'Bloom';
 
 export default function NotificationSound() {
   const router = useRouter();
+  const [volume, setVolume] = useState(0.5);
+  const [selectedTone, setSelectedTone] = useState<ToneKeys>('Breeze');
+  const [vibration, setVibration] = useState(false);
 
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [vibrationEnabled, setVibrationEnabled] = useState(true);
-  const [volume, setVolume] = useState(0.6); // 0..1
-  const [tone, setTone] = useState<Tone>('Breeze');
-
-  const tones = useMemo<Tone[]>(() => ['Breeze', 'Ripple', 'Chime', 'Bloom'], []);
-
-  const clamp = (n: number) => Math.max(0, Math.min(1, n));
-
-  const bumpVolume = (delta: number) => {
-    setVolume((v) => {
-      const next = clamp(v + delta);
-      return Math.round(next * 100) / 100;
-    });
+  const handleSave = () => {
+    Alert.alert(
+      "Success", 
+      "Settings saved.", 
+      [{ text: "OK", onPress: () => router.replace("/Notifications") }]
+    );
   };
 
-  const onCancel = () => router.back();
-  const onSave = () => {
-    // UI-only for now (no sounds/storage yet)
-    router.back();
+  const handleCancel = () => {
+    router.replace("/Notifications");
   };
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <View style={styles.center}>
-        <View style={styles.card}>
-          {/* Header */}
-          <View style={styles.headerRow}>
-            <View style={styles.iconCircle}>
-              <Text style={styles.iconText}>♪</Text>
-            </View>
+    <ImageBackground
+      source={require('../assets/images/bg.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.safe}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={styles.container}>
+            
+            {/* Title */}
             <Text style={styles.title}>Notification Sound</Text>
-          </View>
 
-          {/* Content box */}
-          <View style={styles.box}>
-            {/* Sound */}
-            <View style={styles.rowBetween}>
-              <Text style={styles.label}>Sound</Text>
-              <Switch
-                value={soundEnabled}
-                onValueChange={setSoundEnabled}
-                trackColor={{ false: '#A9B08A', true: '#2F3B2D' }}
-                thumbColor={soundEnabled ? '#E8EFCC' : '#E6E6E6'}
-              />
+            {/* Sound Section */}
+            <Text style={styles.label}>Sound</Text>
+            <View style={styles.card}>
+              <View style={styles.row}>
+                <Text style={styles.volumeLabel}>Volume</Text>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={0}
+                  maximumValue={1}
+                  value={volume}
+                  onValueChange={setVolume}
+                  minimumTrackTintColor="#636B2F"
+                  maximumTrackTintColor="#3D4127"
+                  thumbTintColor="#2b2c2aff"
+                />
+              </View>
             </View>
 
-            {/* Volume */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Volume</Text>
-
-              <View style={styles.volumeRow}>
+            {/* Select Tone Section */}
+            <Text style={styles.label}>Select Tone</Text>
+            <View style={styles.toneGrid}>
+              <View style={styles.row2}>
                 <Pressable
-                  onPress={() => bumpVolume(-0.1)}
-                  style={({ pressed }) => [styles.volBtn, pressed && styles.pressed]}
+                  style={[
+                    styles.option,
+                    styles.optionLeft,
+                    selectedTone === 'Breeze' && styles.selected
+                  ]}
+                  onPress={() => setSelectedTone('Breeze')}
                 >
-                  <Text style={styles.volBtnText}>-</Text>
+                  <Text style={[
+                    styles.optionText,
+                    selectedTone === 'Breeze' && styles.optionTextSelected
+                  ]}>Breeze</Text>
                 </Pressable>
-
-                <View style={styles.barTrack}>
-                  <View style={[styles.barFill, { width: `${Math.round(volume * 100)}%` }]} />
-                  <View style={[styles.barThumb, { left: `${Math.round(volume * 100)}%` }]} />
-                </View>
-
                 <Pressable
-                  onPress={() => bumpVolume(0.1)}
-                  style={({ pressed }) => [styles.volBtn, pressed && styles.pressed]}
+                  style={[
+                    styles.option,
+                    styles.optionRight,
+                    selectedTone === 'Ripple' && styles.selected
+                  ]}
+                  onPress={() => setSelectedTone('Ripple')}
                 >
-                  <Text style={styles.volBtnText}>+</Text>
+                  <Text style={[
+                    styles.optionText,
+                    selectedTone === 'Ripple' && styles.optionTextSelected
+                  ]}>Ripple</Text>
+                </Pressable>
+              </View>
+              <View style={styles.row2}>
+                <Pressable
+                  style={[
+                    styles.option,
+                    styles.optionLeft,
+                    selectedTone === 'Chime' && styles.selected
+                  ]}
+                  onPress={() => setSelectedTone('Chime')}
+                >
+                  <Text style={[
+                    styles.optionText,
+                    selectedTone === 'Chime' && styles.optionTextSelected
+                  ]}>Chime</Text>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.option,
+                    styles.optionRight,
+                    selectedTone === 'Bloom' && styles.selected
+                  ]}
+                  onPress={() => setSelectedTone('Bloom')}
+                >
+                  <Text style={[
+                    styles.optionText,
+                    selectedTone === 'Bloom' && styles.optionTextSelected
+                  ]}>Bloom</Text>
                 </Pressable>
               </View>
             </View>
 
-            {/* Select tone */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Select Tone</Text>
-
-              <View style={styles.toneBox}>
-                {tones.map((t, idx) => {
-                  const selected = t === tone;
-                  return (
-                    <Pressable
-                      key={t}
-                      onPress={() => setTone(t)}
-                      style={({ pressed }) => [
-                        styles.toneRow,
-                        idx !== tones.length - 1 && styles.toneDivider,
-                        pressed && styles.pressed,
-                      ]}
-                      accessibilityRole="radio"
-                      accessibilityState={{ checked: selected }}
-                    >
-                      <View style={[styles.radioOuter, selected && styles.radioOuterSelected]}>
-                        {selected ? <View style={styles.radioInner} /> : null}
-                      </View>
-                      <Text style={styles.toneText}>{t}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-
-            {/* Vibration */}
-            <View style={[styles.rowBetween, styles.section]}>
-              <Text style={styles.label}>Vibration</Text>
-              <Switch
-                value={vibrationEnabled}
-                onValueChange={setVibrationEnabled}
-                trackColor={{ false: '#A9B08A', true: '#2F3B2D' }}
-                thumbColor={vibrationEnabled ? '#E8EFCC' : '#E6E6E6'}
-              />
-            </View>
+            {/* Vibration Section */}
+            <Text style={styles.label}>Vibration</Text>
+            <Pressable
+              onPress={() => setVibration(!vibration)}
+              style={[
+                styles.option,
+                styles.fullWidthOption,
+                vibration && styles.selected
+              ]}
+            >
+              <Text style={[
+                styles.optionText,
+                vibration && styles.optionTextSelected
+              ]}>
+                {vibration ? 'ON' : 'OFF'}
+              </Text>
+            </Pressable>
 
             {/* Buttons */}
-            <View style={styles.footerRow}>
-              <Pressable
-                onPress={onCancel}
-                style={({ pressed }) => [styles.btn, styles.btnGhost, pressed && styles.pressed]}
-              >
-                <Text style={styles.btnGhostText}>Cancel</Text>
+            <View style={styles.buttonRow}>
+              <Pressable style={styles.cancelButton} onPress={handleCancel}>
+                <Text style={styles.cancelText}>Cancel</Text>
               </Pressable>
-
-              <Pressable
-                onPress={onSave}
-                style={({ pressed }) => [styles.btn, styles.btnPrimary, pressed && styles.pressed]}
-              >
-                <Text style={styles.btnPrimaryText}>Save</Text>
+              <Pressable style={styles.saveButton} onPress={handleSave}>
+                <Text style={styles.saveText}>Save</Text>
               </Pressable>
             </View>
           </View>
-        </View>
-      </View>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
+  background: {
     flex: 1,
-    backgroundColor: '#DCE6BE',
   },
-  center: {
+  safe: {
     flex: 1,
-    justifyContent: 'center',
-    padding: 18,
   },
-  card: {
-    width: '100%',
-    maxWidth: 420,
-    alignSelf: 'center',
-    borderRadius: 26,
-    backgroundColor: 'rgba(220, 230, 190, 0.85)',
-    borderWidth: 1,
-    borderColor: 'rgba(55, 65, 40, 0.25)',
-    padding: 18,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingBottom: 10,
-  },
-  iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#5D6F3F',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: {
-    color: '#E8EFCC',
-    fontSize: 20,
-    fontWeight: '700',
+  container: {
+    flexGrow: 1,
+    padding: 20,
   },
   title: {
-    fontSize: 24
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 40,
+    marginBottom: 30,
+    color: '#3D4127',
+  },
+  label: {
+    color: '#3D4127',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 10,
+    marginTop: 15,
+  },
+  card: {
+    backgroundColor: '#ffffffaa',
+    borderRadius: 8,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#3D4127',
+    marginBottom: 12,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  row2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  volumeLabel: {
+    fontSize: 16,
+    color: '#3D4127',
+    minWidth: 60,
+    marginRight: 15,
+  },
+  slider: {
+    flex: 1,
+    height: 40,
+  },
+  toneGrid: {
+    marginBottom: 12,
+  },
+  option: {
+    backgroundColor: '#ffffffaa',
+    padding: 18,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3D4127',
+  },
+  optionLeft: {
+    width: '48%',
+  },
+  optionRight: {
+    width: '48%',
+  },
+  fullWidthOption: {
+    width: '100%',
+    marginBottom: 12,
+  },
+  selected: {
+    backgroundColor: '#636B2F',
+    borderColor: '#636B2F',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#3D4127',
+    fontWeight: '500',
+  },
+  optionTextSelected: {
+    color: '#FFFFFF',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 30,
+  },
+  cancelButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    backgroundColor: '#ffffffaa',
+    borderWidth: 1,
+    borderColor: '#2b2c2aff',
+    marginRight: 15,
+  },
+  saveButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    backgroundColor: '#2b2c2aff',
+  },
+  cancelText: {
+    color: '#2b2c2aff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  saveText: {
+    color: '#b8ff7eff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

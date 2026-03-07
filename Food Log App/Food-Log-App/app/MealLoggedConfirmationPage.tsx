@@ -4,14 +4,36 @@ import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-
+import { useLocalSearchParams } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function MealLoggedConfirmationPage() {
 const router = useRouter();
-
+const params = useLocalSearchParams();
+const entry = params.data ? JSON.parse(params.data as string) : null;
 
 useEffect(() => {
+  const saveMeal = async () => {
+    if (!entry) return;
 
-  }, []);
+    const stored = await AsyncStorage.getItem('mealEntries');
+    const existing = stored ? JSON.parse(stored) : [];
+
+    const newEntry = {
+      date: entry.timestamp.split('T')[0],
+      mealName: entry.mealName,
+      ingredients: entry.ingredients,
+      calories: entry.calories,
+      allergens: entry.allergens,
+    };
+
+    await AsyncStorage.setItem(
+      'mealEntries',
+      JSON.stringify([...existing, newEntry])
+    );
+  };
+
+  saveMeal();
+}, []);
 
   return (
     //Gradient Background
