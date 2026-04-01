@@ -16,12 +16,12 @@ export default function NotificationSound() {
     Alert.alert(
       "Success", 
       "Settings saved.", 
-      [{ text: "OK", onPress: () => router.replace("/Notifications") }]
+      [{ text: "OK", onPress: () => router.back() }]
     );
   };
 
   const handleCancel = () => {
-    router.replace("/Notifications");
+    router.back();
   };
 
   return (

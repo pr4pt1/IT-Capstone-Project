@@ -27,12 +27,20 @@ export default function Settings() {
                 <Text style={styles.rowText}>Privacy & Security</Text>
             </Pressable>
 
-            {/* Notification Button */}
+            {/* Sound Button */}
             <Pressable
                 style={styles.row}
-                onPress={() => router.push("/Notifications")}
+                onPress={() => router.push("/NotificationSound")}
             >
-                <Text style={styles.rowText}>Notifications</Text>
+                <Text style={styles.rowText}>Notification Sound</Text>
+            </Pressable>
+
+            {/* Previews Button */}
+            <Pressable
+                style={styles.row}
+                onPress={() => router.push("/NotificationPreview")}
+            >
+                <Text style={styles.rowText}>Notification Previews</Text>
             </Pressable>
 
             {/* Text Size Button */}
