@@ -1,8 +1,11 @@
 import { Text, StyleSheet, ScrollView, Pressable, ImageBackground, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { FontSizeContext } from "../components/FontSize";
+import { useContext } from "react";
 
 export default function WelcomePage() {
   const router = useRouter();
+  const { fontSize } = useContext(FontSizeContext);
 
   return (
     //Gradient Background
@@ -12,18 +15,18 @@ export default function WelcomePage() {
       resizeMode="contain"
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Welcome to</Text>
-        <Text style={styles.title}>The Food Log</Text>
-      <Image
-        source={require('@/assets/images/ourlogo.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
+        <Text style={[styles.title, { fontSize: fontSize + 12 }]}>Welcome to</Text>
+        <Text style={[styles.title, { fontSize: fontSize + 12 }]}>The Food Log</Text>
+        <Image
+          source={require('@/assets/images/ourlogo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
         <Pressable
           style={styles.button}
           onPress={() => router.push('/LoginPage')}
         >
-          <Text style={styles.buttonText}>Start</Text>
+          <Text style={[styles.buttonText, { fontSize }]}>Start</Text>
         </Pressable>
       </ScrollView>
     </ImageBackground>
@@ -66,8 +69,8 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-  width: 280,
-  height: 280,
-  marginVertical: 20,
-},
+    width: 280,
+    height: 280,
+    marginVertical: 20,
+  },
 });

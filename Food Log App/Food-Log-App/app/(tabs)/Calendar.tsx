@@ -3,6 +3,9 @@ import { Calendar } from 'react-native-calendars';
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from "react";
+import { FontSizeContext } from "@/components/FontSize";
+
 
 const moodEmojiMap: Record<string, string> = {
   happy: "😊",
@@ -29,6 +32,7 @@ type MealEntry = {
 };
 
 export default function CalendarScreen() {
+  const { fontSize } = useContext(FontSizeContext);
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
@@ -70,8 +74,8 @@ export default function CalendarScreen() {
       "Are you sure you want to delete all calendar data? This cannot be undone.",
       [
         { text: "Cancel", style: "cancel" },
-        { 
-          text: "Yes, Clear", 
+        {
+          text: "Yes, Clear",
           style: "destructive",
           onPress: async () => {
             try {
@@ -103,7 +107,7 @@ export default function CalendarScreen() {
 
         {/* HEADER */}
         <View style={styles.header}>
-          <Text style={styles.headerText}>Calendar History</Text>
+          <Text style={[styles.headerText, { fontSize: fontSize + 8 }]}>Calendar History</Text>
           <TouchableOpacity onPress={clearCalendarData} style={styles.clearButton}>
             <Text style={styles.clearButtonText}>Clear Calendar</Text>
           </TouchableOpacity>
@@ -141,7 +145,7 @@ export default function CalendarScreen() {
             {/* MEALS */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Meals Logged</Text>
+                <Text style={[styles.sectionTitle, { fontSize: fontSize + 4 }]}>Meals Logged</Text>
                 <TouchableOpacity
                   onPress={() => router.push('/LogMealPage')}
                   style={styles.plusButton}
@@ -155,8 +159,8 @@ export default function CalendarScreen() {
               ) : (
                 mealsForDay.map((meal, index) => (
                   <View key={index} style={styles.symptomItem}>
-                    <Text style={styles.symptomText}>{meal.mealName}</Text>
-                    <Text style={styles.notesText}>
+                    <Text style={[styles.symptomText, { fontSize: fontSize + 4 }]}>{meal.mealName}</Text>
+                    <Text style={[styles.notesText, { fontSize: fontSize + 4 }]}>
                       Time: {new Date(meal.date).toLocaleString([], {
                         month: 'short',
                         day: 'numeric',
@@ -167,59 +171,59 @@ export default function CalendarScreen() {
                     </Text>
                     {meal.calories && <Text style={styles.notesText}>Calories: {meal.calories}</Text>}
                     {meal.allergens && (
-                      <Text style={styles.notesText}>
+                      <Text style={[styles.notesText, { fontSize: fontSize + 4 }]}>
                         Allergens:{" "}
                         {[meal.allergens.dairy ? "Dairy" : null,
-                          meal.allergens.nuts ? "Nuts" : null,
-                          meal.allergens.gluten ? "Gluten" : null]
+                        meal.allergens.nuts ? "Nuts" : null,
+                        meal.allergens.gluten ? "Gluten" : null]
                           .filter(Boolean)
                           .join(", ") || "None"}
                       </Text>
                     )}
-                    {meal.ingredients && <Text style={styles.notesText}>Ingredients: {meal.ingredients}</Text>}
+                    {meal.ingredients && <Text style={[styles.notesText, { fontSize: fontSize + 4 }]}>Ingredients: {meal.ingredients}</Text>}
                   </View>
                 ))
               )}
             </View>
 
             {/* SYMPTOMS */}
-<View style={styles.section}>
-  <View style={styles.sectionHeader}>
-    <Text style={styles.sectionTitle}>Logged Symptoms</Text>
-    <TouchableOpacity
-      onPress={() => router.push('/symptoms')}
-      style={styles.plusButton}
-    >
-      <Text style={styles.plusText}>+</Text>
-    </TouchableOpacity>
-  </View>
-  {symptomsForDay.length === 0 ? (
-    <Text style={styles.emptyText}>No symptoms logged for this day.</Text>
-  ) : (
-    symptomsForDay.map((entry, index) => (
-      <View key={index} style={styles.symptomItem}>
-        {/* Date & Time */}
-        <Text style={styles.notesText}>
-    Time: {new Date(entry.timestamp).toLocaleString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })}
-  </Text>
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Logged Symptoms</Text>
+                <TouchableOpacity
+                  onPress={() => router.push('/symptoms')}
+                  style={styles.plusButton}
+                >
+                  <Text style={styles.plusText}>+</Text>
+                </TouchableOpacity>
+              </View>
+              {symptomsForDay.length === 0 ? (
+                <Text style={[styles.emptyText, { fontSize: fontSize + 4 }]}>No symptoms logged for this day.</Text>
+              ) : (
+                symptomsForDay.map((entry, index) => (
+                  <View key={index} style={styles.symptomItem}>
+                    {/* Date & Time */}
+                    <Text style={styles.notesText}>
+                      Time: {new Date(entry.timestamp).toLocaleString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </Text>
 
-        {/* Symptom description */}
-        <Text style={styles.symptomText}>
-          {Array.isArray(entry.symptoms) ? entry.symptoms.join(', ') : entry.symptoms}
-        </Text>
+                    {/* Symptom description */}
+                    <Text style={styles.symptomText}>
+                      {Array.isArray(entry.symptoms) ? entry.symptoms.join(', ') : entry.symptoms}
+                    </Text>
 
-        {/* Notes */}
-        {entry.notes && <Text style={styles.notesText}>Notes: {entry.notes}</Text>}
-      </View>
-    ))
-  )}
-</View>
+                    {/* Notes */}
+                    {entry.notes && <Text style={styles.notesText}>Notes: {entry.notes}</Text>}
+                  </View>
+                ))
+              )}
+            </View>
 
             {/* MOOD */}
             <View style={styles.section}>
@@ -254,105 +258,105 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 25,
-    paddingTop: 50,      
-    paddingBottom: 12,   
+    paddingTop: 50,
+    paddingBottom: 12,
   },
 
-  headerText: { 
-    color: '#21221e', 
-    fontSize: 20, 
-    fontWeight: 'bold', 
-    paddingRight: 10 
+  headerText: {
+    color: '#21221e',
+    fontWeight: 'bold',
+    paddingRight: 10
   },
 
-  clearButton: { 
-    paddingHorizontal: 12, 
-    paddingVertical: 8, 
-    backgroundColor: '#3D4127', 
-    borderRadius: 8, 
-    marginTop: 10 
+  clearButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#3D4127',
+    borderRadius: 8,
+    marginTop: 10
   },
 
-  clearButtonText: { 
-    color: '#FFFFFF', 
-    fontWeight: '600', 
-    fontSize: 14 
+  clearButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 14
   },
 
-  details: { 
-    paddingHorizontal: 16, 
-    paddingTop: 8 
+  details: {
+    paddingHorizontal: 16,
+    paddingTop: 8
   },
 
-  detailsTitle: { 
-    fontSize: 16, 
-    fontWeight: '600', 
-    color: '#3D4127', 
-    textAlign: 'center', 
-    marginTop: 24, 
-    marginBottom: 8 
+  detailsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#3D4127',
+    textAlign: 'center',
+    marginTop: 24,
+    marginBottom: 8
   },
 
-  detailsBox: { 
-    backgroundColor: 'rgba(99, 107, 47, 0.5)', 
-    borderRadius: 8, 
-    padding: 16 
+  detailsBox: {
+    backgroundColor: 'rgba(99, 107, 47, 0.5)',
+    borderRadius: 8,
+    padding: 16
   },
 
-  section: { 
-    borderTopWidth: 1, 
-    borderTopColor: '#ccc', 
-    paddingVertical: 8 
+  section: {
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+    paddingVertical: 8
   },
 
-  sectionHeader: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center' 
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
 
-  sectionTitle: { 
-    fontSize: 15, 
-    fontWeight: '500', 
-    color: '#3D4127' 
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#3D4127'
   },
 
-  plusButton: { 
-    width: 36, 
-    height: 36, 
-    borderRadius: 18, 
-    backgroundColor: '#3D4127', 
-    justifyContent: 'center', 
-    alignItems: 'center' 
+  plusButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#3D4127',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
-  plusText: { 
-    color: '#FFFFFF', 
-    fontSize: 24, 
-    fontWeight: '700' 
+  plusText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '700'
   },
 
-  emptyText: { 
-    color: '#3D4127', 
-    marginTop: 8, 
-    fontStyle: 'italic' 
+  emptyText: {
+    color: '#3D4127',
+    marginTop: 8,
+    fontStyle: 'italic'
   },
 
-  symptomItem: { 
-    backgroundColor: 'rgba(255,255,255,0.2)', 
-    padding: 10, 
-    borderRadius: 8, 
-    marginTop: 8 
+  symptomItem: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 8
   },
 
-  symptomText: { 
-    color: '#3D4127', 
-    fontWeight: '600', 
-    fontSize: 15 
+  symptomText: {
+    color: '#3D4127',
+    fontWeight: '600',
+    fontSize: 15
   },
 
-  notesText: { color: '#3D4127', 
-    marginTop: 4, 
-    fontSize: 14 
+  notesText: {
+    color: '#3D4127',
+    marginTop: 4,
+    fontSize: 14
   },
 });

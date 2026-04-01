@@ -3,19 +3,22 @@ import { Text, StyleSheet, Pressable, Alert, ScrollView, View, ImageBackground }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
 import Slider from '@react-native-community/slider';
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
 
 type ToneKeys = 'Breeze' | 'Ripple' | 'Chime' | 'Bloom';
 
 export default function NotificationSound() {
   const router = useRouter();
+  const { fontSize } = useContext(FontSizeContext);
   const [volume, setVolume] = useState(0.5);
   const [selectedTone, setSelectedTone] = useState<ToneKeys>('Breeze');
   const [vibration, setVibration] = useState(false);
 
   const handleSave = () => {
     Alert.alert(
-      "Success", 
-      "Settings saved.", 
+      "Success",
+      "Settings saved.",
       [{ text: "OK", onPress: () => router.replace("/Notifications") }]
     );
   };
@@ -33,15 +36,15 @@ export default function NotificationSound() {
       <SafeAreaView style={styles.safe}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.container}>
-            
+
             {/* Title */}
-            <Text style={styles.title}>Notification Sound</Text>
+            <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Notification Sound</Text>
 
             {/* Sound Section */}
-            <Text style={styles.label}>Sound</Text>
+            <Text style={[styles.label, { fontSize: fontSize + 4 }]}>Sound</Text>
             <View style={styles.card}>
               <View style={styles.row}>
-                <Text style={styles.volumeLabel}>Volume</Text>
+                <Text style={[styles.volumeLabel, { fontSize }]}>Volume</Text>
                 <Slider
                   style={styles.slider}
                   minimumValue={0}
@@ -56,7 +59,7 @@ export default function NotificationSound() {
             </View>
 
             {/* Select Tone Section */}
-            <Text style={styles.label}>Select Tone</Text>
+            <Text style={[styles.label, { fontSize: fontSize + 4 }]}>Select Tone</Text>
             <View style={styles.toneGrid}>
               <View style={styles.row2}>
                 <Pressable
@@ -69,6 +72,7 @@ export default function NotificationSound() {
                 >
                   <Text style={[
                     styles.optionText,
+                    { fontSize },
                     selectedTone === 'Breeze' && styles.optionTextSelected
                   ]}>Breeze</Text>
                 </Pressable>
@@ -117,7 +121,7 @@ export default function NotificationSound() {
             </View>
 
             {/* Vibration Section */}
-            <Text style={styles.label}>Vibration</Text>
+            <Text style={[styles.label, { fontSize: fontSize + 4 }]}>Vibration</Text>
             <Pressable
               onPress={() => setVibration(!vibration)}
               style={[
@@ -128,6 +132,7 @@ export default function NotificationSound() {
             >
               <Text style={[
                 styles.optionText,
+                { fontSize },
                 vibration && styles.optionTextSelected
               ]}>
                 {vibration ? 'ON' : 'OFF'}
@@ -137,10 +142,10 @@ export default function NotificationSound() {
             {/* Buttons */}
             <View style={styles.buttonRow}>
               <Pressable style={styles.cancelButton} onPress={handleCancel}>
-                <Text style={styles.cancelText}>Cancel</Text>
+                <Text style={[styles.cancelText, { fontSize }]}>Cancel</Text>
               </Pressable>
               <Pressable style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveText}>Save</Text>
+                <Text style={[styles.saveText, { fontSize }]}>Save</Text>
               </Pressable>
             </View>
           </View>

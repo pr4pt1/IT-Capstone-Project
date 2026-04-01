@@ -1,13 +1,16 @@
-import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground, Image} from 'react-native';
+import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, Platform, ImageBackground, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
 
 export default function CreateAccountScreen() {
   const router = useRouter();
 
+  const { fontSize } = useContext(FontSizeContext);
   // Form state
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
@@ -43,88 +46,88 @@ export default function CreateAccountScreen() {
     }
 
     // If everything is valid:
-    if(Platform.OS === 'web')
-    Alert.alert("Success!", "Your account has been created.");
+    if (Platform.OS === 'web')
+      Alert.alert("Success!", "Your account has been created.");
 
     router.replace('/LoginPage');
   };
 
   return (
     <ImageBackground
-          source={require('@/assets/images/bg.png')}
-          style={styles.background}
-          resizeMode="cover"
-        >
+      source={require('@/assets/images/bg.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
 
-          
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <ThemedView style={styles.container}>
 
-        <ThemedText type="title">Create Your Account</ThemedText>
-              <Image
-                source={require('@/assets/images/ourlogo.png')}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-        {/* Input fields */}
-        <TextInput 
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-          style={styles.input}
-        />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ThemedView style={styles.container}>
 
-        <TextInput 
-          placeholder="Age"
-          keyboardType="numeric"
-          value={age}
-          onChangeText={setAge}
-          style={styles.input}
-        />
+          <ThemedText type="title" style={{ fontSize }}>Create Your Account</ThemedText>
+          <Image
+            source={require('@/assets/images/ourlogo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          {/* Input fields */}
+          <TextInput
+            placeholder="Name"
+            value={name}
+            onChangeText={setName}
+            style={[styles.input, { fontSize }]}
+          />
 
-        <TextInput 
-          placeholder="Email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-        />
+          <TextInput
+            placeholder="Age"
+            keyboardType="numeric"
+            value={age}
+            onChangeText={setAge}
+            style={[styles.input, { fontSize }]}
+          />
 
-        <TextInput 
-          placeholder="Username"
-          autoCapitalize="none"
-          value={username}
-          onChangeText={setUsername}
-          style={styles.input}
-        />
+          <TextInput
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+            style={[styles.input, { fontSize }]}
+          />
 
-        <TextInput 
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          style={styles.input}
-        />
+          <TextInput
+            placeholder="Username"
+            autoCapitalize="none"
+            value={username}
+            onChangeText={setUsername}
+            style={[styles.input, { fontSize }]}
+          />
 
-        <TextInput 
-          placeholder="Retype Password"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          style={styles.input}
-        />
+          <TextInput
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+            style={[styles.input, { fontSize }]}
+          />
 
-        {/* Create Account Button */}
-        <Pressable 
-          style={styles.button}
-          onPress={validateAndSubmit}
-        >
-          <Text style={styles.buttonText}>Create Account</Text>
-        </Pressable>
+          <TextInput
+            placeholder="Retype Password"
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            style={[styles.input, { fontSize }]}
+          />
 
-      </ThemedView>
-    </ScrollView>
+          {/* Create Account Button */}
+          <Pressable
+            style={styles.button}
+            onPress={validateAndSubmit}
+          >
+            <Text style={[styles.buttonText, { fontSize }]}>Create Account</Text>
+          </Pressable>
+
+        </ThemedView>
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -168,9 +171,9 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-  width: 240,
-  height: 240,
-},
+    width: 240,
+    height: 240,
+  },
 
 });
 
