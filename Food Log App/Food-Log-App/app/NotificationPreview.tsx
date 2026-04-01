@@ -13,12 +13,12 @@ export default function NotificationPreview() {
     Alert.alert(
       "Success", 
       "Preview settings saved.", 
-      [{ text: "OK", onPress: () => router.replace("/Notifications") }]
+      [{ text: "OK", onPress: () => router.back() }]
     );
   };
 
   const handleCancel = () => {
-    router.replace("/Notifications");
+    router.back();
   };
 
   return (
