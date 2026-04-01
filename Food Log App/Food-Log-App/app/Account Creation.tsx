@@ -1,17 +1,8 @@
-import {
-  Text,
-  TextInput,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  Pressable,
-  ImageBackground,
-  Image,
-} from "react-native";
+import {Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, ImageBackground, Image,} 
+from "react-native";
 
 import { useRouter } from "expo-router";
 import { useState } from "react";
-
 import {
   createUserWithEmailAndPassword,
   updateProfile,

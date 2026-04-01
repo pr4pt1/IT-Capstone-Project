@@ -1,20 +1,10 @@
-import {
-  Text,
-  TextInput,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  Pressable,
-  ImageBackground,
-  Image,
-} from "react-native";
+import { Text, TextInput, StyleSheet, Alert, ScrollView, Pressable, ImageBackground, Image,} 
+from "react-native";
 
 import { useRouter } from "expo-router";
 import { useState } from "react";
-
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
-
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 
