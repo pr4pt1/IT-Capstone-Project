@@ -27,18 +27,22 @@ export default function LogMealPage() {
   };
 
   const handleSave = (): void => {
-    const entry = {
-      mealName,
-      ingredients,
-      calories,
-      allergens,
-      timestamp: new Date().toISOString(),
-    };
-
-    console.log('Saved Meal:', entry);
-
-    router.push('/MealLoggedConfirmationPage');
+  const entry = {
+    date: new Date().toISOString().split('T')[0], // ADD THIS
+    mealName,
+    ingredients,
+    calories,
+    allergens,
+    timestamp: new Date().toISOString(),
   };
+
+  router.push({
+    pathname: '/MealLoggedConfirmationPage',
+    params: {
+      data: JSON.stringify(entry),
+    },
+  });
+};
 
   const formattedDate: string = new Date().toLocaleString();
 
@@ -170,13 +174,13 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 30,
-    backgroundColor: '#2b2c2a',
+    backgroundColor: '#636B2F',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#b8ff7e',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
@@ -13,272 +13,346 @@ const moodEmojiMap: Record<string, string> = {
 };
 
 type SymptomEntry = {
-  date: string;
-  symptoms: string | string[];   // ← allows string OR array
+  timestamp: string; // full timestamp
+  symptoms: string | string[];
   notes?: string;
-  meal?: string;
   mood?: string;
   severity?: number;
-  timestamp?: string; 
 };
 
-function DetailSection({ title }: { title: string }) {
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <View style={styles.section}>
-      <TouchableOpacity
-        onPress={() => setExpanded(!expanded)}
-        style={styles.sectionHeader}
-      >
-        <Text style={styles.sectionTitle}>{title}</Text>
-        <Text style={styles.sectionToggle}>{expanded ? '-' : '+'}</Text>
-      </TouchableOpacity>
-      {expanded && <Text style={styles.sectionBody}>Details go here...</Text>}
-    </View>
-  );
-}
+type MealEntry = {
+  date: string; // full timestamp
+  mealName: string;
+  ingredients?: string;
+  calories?: string;
+  allergens?: { dairy?: boolean; nuts?: boolean; gluten?: boolean };
+};
 
 export default function CalendarScreen() {
+
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
-);
+  );
 
-  // All saved symptoms (typed)
   const [allSymptoms, setAllSymptoms] = useState<SymptomEntry[]>([]);
+  const [allMeals, setAllMeals] = useState<MealEntry[]>([]);
 
-  console.log("ALL SYMPTOMS:", allSymptoms);
-  console.log("SELECTED DATE:", selectedDate);
-
-  // Symptoms for the selected date (typed)
   const [symptomsForDay, setSymptomsForDay] = useState<SymptomEntry[]>([]);
+  const [mealsForDay, setMealsForDay] = useState<MealEntry[]>([]);
 
-  // Load symptoms from storage
-useEffect(() => {
-    const loadSymptoms = async () => {
-      const stored = await AsyncStorage.getItem('symptomEntries');
-      if (stored) {
-        setAllSymptoms(JSON.parse(stored));
-      }
+  useEffect(() => {
+    const loadData = async () => {
+      const storedSymptoms = await AsyncStorage.getItem('symptomEntries');
+      if (storedSymptoms) setAllSymptoms(JSON.parse(storedSymptoms));
+
+      const storedMeals = await AsyncStorage.getItem('mealEntries');
+      if (storedMeals) setAllMeals(JSON.parse(storedMeals));
     };
-
-    loadSymptoms();
+    loadData();
   }, []);
 
-  // Filter symptoms when date changes
+  // Filter symptoms and meals for selected date (ignore time)
   useEffect(() => {
-    const filtered = allSymptoms.filter(
-      (entry) => entry.date === selectedDate
+    setSymptomsForDay(allSymptoms.filter(entry => {
+      const entryDate = new Date(entry.timestamp).toISOString().split('T')[0];
+      return entryDate === selectedDate;
+    }));
+
+    setMealsForDay(allMeals.filter(meal => {
+      const mealDate = new Date(meal.date).toISOString().split('T')[0];
+      return mealDate === selectedDate;
+    }));
+  }, [selectedDate, allSymptoms, allMeals]);
+
+  const clearCalendarData = () => {
+    Alert.alert(
+      "Clear Calendar",
+      "Are you sure you want to delete all calendar data? This cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Yes, Clear", 
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('symptomEntries');
+              await AsyncStorage.removeItem('mealEntries');
+
+              setAllSymptoms([]);
+              setAllMeals([]);
+              setSymptomsForDay([]);
+              setMealsForDay([]);
+
+              alert('Calendar data cleared!');
+            } catch (error) {
+              console.error('Error clearing calendar data:', error);
+            }
+          }
+        }
+      ]
     );
-    setSymptomsForDay(filtered);
-  }, [selectedDate, allSymptoms]);
+  };
 
   return (
     <ImageBackground
-          source={require('@/assets/images/bg.png')}
-          style={styles.background}
-          resizeMode="contain"
-        >
-    <View style={styles.container}>
-      {/* Page Title */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Calendar History</Text>
-      </View>
+      source={require('@/assets/images/bg.png')}
+      style={styles.background}
+      resizeMode="contain"
+    >
+      <View style={styles.container}>
 
-      {/* Calendar */}
-      <Calendar
-        current={selectedDate}
-        onDayPress={(day) => setSelectedDate(day.dateString)}
-        markedDates={{
-          [selectedDate]: {
-            selected: true,
-            selectedColor: '#636B2F',
-            selectedTextColor: '#FFFFFF',
-          },
-        }}
-        theme={{
-          backgroundColor: '#BAC095',
-          calendarBackground: '#BAC095',
-          textSectionTitleColor: '#3D4127',
-          selectedDayBackgroundColor: '#636B2F',
-          selectedDayTextColor: '#FFFFFF',
-          todayTextColor: '#3D4127',
-          dayTextColor: '#3D4127',
-          arrowColor: '#3D4127',
-          monthTextColor: '#3D4127',
-          textDayFontWeight: '500',
-          textMonthFontWeight: '700',
-          textDayHeaderFontWeight: '600',
-        }}
-      />
+        {/* HEADER */}
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Calendar History</Text>
+          <TouchableOpacity onPress={clearCalendarData} style={styles.clearButton}>
+            <Text style={styles.clearButtonText}>Clear Calendar</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Title above the box */}
-      <Text style={styles.detailsTitle}>Selected Date Details</Text>
+        {/* CALENDAR */}
+        <Calendar
+          current={selectedDate}
+          onDayPress={(day) => setSelectedDate(day.dateString)}
+          markedDates={{
+            [selectedDate]: {
+              selected: true,
+              selectedColor: '#636B2F',
+              selectedTextColor: '#FFFFFF',
+            },
+          }}
+          theme={{
+            backgroundColor: '#BAC095',
+            calendarBackground: '#BAC095',
+            textSectionTitleColor: '#3D4127',
+            selectedDayBackgroundColor: '#636B2F',
+            selectedDayTextColor: '#FFFFFF',
+            todayTextColor: '#3D4127',
+            dayTextColor: '#3D4127',
+            arrowColor: '#3D4127',
+            monthTextColor: '#3D4127',
+          }}
+        />
 
-      {/* Details box */}
-      <ScrollView style={styles.details}>
-        <View style={styles.detailsBox}>
-          <DetailSection title="Meal Name" />
-          <DetailSection title="Ingredients" />
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Logged Symptoms</Text>
+        <Text style={styles.detailsTitle}>Selected Date Details</Text>
 
-              {/* + Button */}
-              <TouchableOpacity
-                onPress={() => router.push('/symptoms')}
-                style={styles.plusButton}
-              >
-                <Text style={styles.plusText}>+</Text>
-              </TouchableOpacity>
-            </View>
+        <ScrollView style={styles.details}>
+          <View style={styles.detailsBox}>
 
-            {/* Symptoms List */}
-              {symptomsForDay.length === 0 ? (
-                <Text style={styles.emptyText}>
-                  No symptoms logged for this day.
-                </Text>
+            {/* MEALS */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Meals Logged</Text>
+                <TouchableOpacity
+                  onPress={() => router.push('/LogMealPage')}
+                  style={styles.plusButton}
+                >
+                  <Text style={styles.plusText}>+</Text>
+                </TouchableOpacity>
+              </View>
+
+              {mealsForDay.length === 0 ? (
+                <Text style={styles.emptyText}>No meals logged for this day.</Text>
               ) : (
-                symptomsForDay.map((entry, index) => (
+                mealsForDay.map((meal, index) => (
                   <View key={index} style={styles.symptomItem}>
-                    <Text style={styles.symptomText}>
-                      {Array.isArray(entry.symptoms)
-                        ? entry.symptoms.join(', ')
-                        : entry.symptoms}
+                    <Text style={styles.symptomText}>{meal.mealName}</Text>
+                    <Text style={styles.notesText}>
+                      Time: {new Date(meal.date).toLocaleString([], {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
                     </Text>
-
-                    {entry.notes ? (
+                    {meal.calories && <Text style={styles.notesText}>Calories: {meal.calories}</Text>}
+                    {meal.allergens && (
                       <Text style={styles.notesText}>
-                        Notes: {entry.notes}
+                        Allergens:{" "}
+                        {[meal.allergens.dairy ? "Dairy" : null,
+                          meal.allergens.nuts ? "Nuts" : null,
+                          meal.allergens.gluten ? "Gluten" : null]
+                          .filter(Boolean)
+                          .join(", ") || "None"}
                       </Text>
-                    ) : null}
+                    )}
+                    {meal.ingredients && <Text style={styles.notesText}>Ingredients: {meal.ingredients}</Text>}
                   </View>
                 ))
               )}
-          </View>
+            </View>
 
-            {/* Mood & Severity */}
+            {/* SYMPTOMS */}
+<View style={styles.section}>
+  <View style={styles.sectionHeader}>
+    <Text style={styles.sectionTitle}>Logged Symptoms</Text>
+    <TouchableOpacity
+      onPress={() => router.push('/symptoms')}
+      style={styles.plusButton}
+    >
+      <Text style={styles.plusText}>+</Text>
+    </TouchableOpacity>
+  </View>
+  {symptomsForDay.length === 0 ? (
+    <Text style={styles.emptyText}>No symptoms logged for this day.</Text>
+  ) : (
+    symptomsForDay.map((entry, index) => (
+      <View key={index} style={styles.symptomItem}>
+        {/* Date & Time */}
+        <Text style={styles.notesText}>
+    Time: {new Date(entry.timestamp).toLocaleString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })}
+  </Text>
+
+        {/* Symptom description */}
+        <Text style={styles.symptomText}>
+          {Array.isArray(entry.symptoms) ? entry.symptoms.join(', ') : entry.symptoms}
+        </Text>
+
+        {/* Notes */}
+        {entry.notes && <Text style={styles.notesText}>Notes: {entry.notes}</Text>}
+      </View>
+    ))
+  )}
+</View>
+
+            {/* MOOD */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>Mood & Severity</Text>
               </View>
-
               {symptomsForDay.length === 0 ? (
-                <Text style={styles.emptyText}>
-                  No mood or severity logged.
-                </Text>
+                <Text style={styles.emptyText}>No mood or severity logged.</Text>
               ) : (
                 symptomsForDay.map((entry, index) => (
                   <View key={index} style={styles.symptomItem}>
-                    {/* Mood */}
-                    {entry.mood ? (
-                      <Text style={styles.symptomText}>
-                        Mood: {moodEmojiMap[entry.mood]} {entry.mood}
-                      </Text>
-                    ) : null}
-
-                    {/* Severity */}
-                    {entry.severity !== undefined ? (
-                      <Text style={styles.symptomText}>
-                        Severity: {entry.severity}
-                      </Text>
-                    ) : null}
+                    {entry.mood && <Text style={styles.symptomText}>Mood: {moodEmojiMap[entry.mood]} {entry.mood}</Text>}
+                    {entry.severity !== undefined && <Text style={styles.symptomText}>Severity: {entry.severity}</Text>}
                   </View>
                 ))
               )}
             </View>
+
           </View>
         </ScrollView>
+
       </View>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
-
-  container: { flex: 1, backgroundColor: '#BAC095' }, //for gradient change value to 'transparent'
-
+  background: { flex: 1 },
+  container: { flex: 1, backgroundColor: '#BAC095' },
   header: {
-    padding: 25,
-    alignItems: 'center',
-  },
-  headerText: {
-    color: '#3D4127',
-    fontSize: 20,
-    fontWeight: 'bold',
-    padding: 30,
-  },
-
-  details: { paddingHorizontal: 16, paddingTop: 8 },
-  detailsTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#3D4127',
-    textAlign: 'center',
-    marginTop: 24,
-    marginBottom: 8,
-  },
-
-  detailsBox: {
-    backgroundColor: 'rgba(99, 107, 47, 0.5)', // 636B2F with 50% opacity
-    borderRadius: 8,
-    padding: 16,
-  },
-
-  section: { borderTopWidth: 1, borderTopColor: '#ccc', paddingVertical: 8 },
-  sectionHeader: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  sectionTitle: { fontSize: 15, fontWeight: '500', color: '#3D4127' },
-  sectionToggle: { fontSize: 18, color: '#3D4127' },
-  sectionBody: { marginTop: 8, color: '#3D4127' },
-
-  plusButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18, // perfect circle
-    backgroundColor: '#3D4127', // dark green
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    paddingHorizontal: 25,
+    paddingTop: 50,      
+    paddingBottom: 12,   
   },
 
-  plusText: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '700',
-    marginTop: -2,
+  headerText: { 
+    color: '#21221e', 
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    paddingRight: 10 
   },
 
-  emptyText: {
-    color: '#3D4127',
-    marginTop: 8,
-    fontStyle: 'italic',
+  clearButton: { 
+    paddingHorizontal: 12, 
+    paddingVertical: 8, 
+    backgroundColor: '#3D4127', 
+    borderRadius: 8, 
+    marginTop: 10 
   },
 
-  symptomItem: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    padding: 10,
-    borderRadius: 8,
-    marginTop: 8,
+  clearButtonText: { 
+    color: '#FFFFFF', 
+    fontWeight: '600', 
+    fontSize: 14 
   },
 
-  symptomText: {
-    color: '#3D4127',
-    fontWeight: '600',
-    fontSize: 15,
+  details: { 
+    paddingHorizontal: 16, 
+    paddingTop: 8 
   },
 
-  notesText: {
-    color: '#3D4127',
-    marginTop: 4,
-    fontSize: 14,
+  detailsTitle: { 
+    fontSize: 16, 
+    fontWeight: '600', 
+    color: '#3D4127', 
+    textAlign: 'center', 
+    marginTop: 24, 
+    marginBottom: 8 
+  },
+
+  detailsBox: { 
+    backgroundColor: 'rgba(99, 107, 47, 0.5)', 
+    borderRadius: 8, 
+    padding: 16 
+  },
+
+  section: { 
+    borderTopWidth: 1, 
+    borderTopColor: '#ccc', 
+    paddingVertical: 8 
+  },
+
+  sectionHeader: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center' 
+  },
+
+  sectionTitle: { 
+    fontSize: 15, 
+    fontWeight: '500', 
+    color: '#3D4127' 
+  },
+
+  plusButton: { 
+    width: 36, 
+    height: 36, 
+    borderRadius: 18, 
+    backgroundColor: '#3D4127', 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+
+  plusText: { 
+    color: '#FFFFFF', 
+    fontSize: 24, 
+    fontWeight: '700' 
+  },
+
+  emptyText: { 
+    color: '#3D4127', 
+    marginTop: 8, 
+    fontStyle: 'italic' 
+  },
+
+  symptomItem: { 
+    backgroundColor: 'rgba(255,255,255,0.2)', 
+    padding: 10, 
+    borderRadius: 8, 
+    marginTop: 8 
+  },
+
+  symptomText: { 
+    color: '#3D4127', 
+    fontWeight: '600', 
+    fontSize: 15 
+  },
+
+  notesText: { color: '#3D4127', 
+    marginTop: 4, 
+    fontSize: 14 
   },
 });

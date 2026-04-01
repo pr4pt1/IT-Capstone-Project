@@ -36,6 +36,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="TextSize" options={{ headerShown: true }} /> {/* Added by Mary */}
           <Stack.Screen name="MealLoggedConfirmationPage" options={{ headerShown: false }} />
+          <Stack.Screen name="symptoms-confirmation-page" options={{ headerShown: false }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
