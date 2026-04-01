@@ -20,7 +20,7 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
-        name="Home Page"
+        name="HomePage"
         options={{
           title: 'Home',
           tabBarIcon: ({ focused }) => (
