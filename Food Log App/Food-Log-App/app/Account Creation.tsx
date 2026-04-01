@@ -46,7 +46,7 @@ export default function CreateAccountScreen() {
     if(Platform.OS === 'web')
     Alert.alert("Success!", "Your account has been created.");
 
-    router.replace('/Login Page');
+    router.replace('/LoginPage');
   };
 
   return (

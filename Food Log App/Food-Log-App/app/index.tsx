@@ -21,7 +21,7 @@ export default function WelcomePage() {
       />
         <Pressable
           style={styles.button}
-          onPress={() => router.push('/Login Page')}
+          onPress={() => router.push('/LoginPage')}
         >
           <Text style={styles.buttonText}>Start</Text>
         </Pressable>
