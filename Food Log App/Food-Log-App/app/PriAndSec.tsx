@@ -11,13 +11,14 @@ import { Switch } from "react-native";
 import { View } from "react-native";
 import { ImageBackground } from "react-native";
 
+
 export default function PriAndSec() {
 
     const { fontSize } = useContext(FontSizeContext);
 
     const [isOn, setIsOn] = useState(false);
 
-    const toggleSwitch = (newValue) => {
+    const toggleSwitch = (newValue: boolean) => {
         if (newValue === true) {
             Alert.alert("Share Data", "Would you like to share your in-app data to help improve the app?",
                 [

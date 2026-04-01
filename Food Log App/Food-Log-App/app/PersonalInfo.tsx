@@ -6,14 +6,18 @@ import { StyleSheet } from "react-native";
 import { Pressable } from "react-native";
 import { Alert } from "react-native";
 import { ImageBackground } from "react-native";
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
 
 export default function PersonalInfo() {
     //User info
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [email, setEmail] = useState("");
+    const { fontSize } = useContext(FontSizeContext);
 
     const handleSave = () => {
+
 
         //Check for empty fields
         if (!email.trim() || !name.trim() || !age.trim()) {
@@ -48,10 +52,10 @@ export default function PersonalInfo() {
         >
             <SafeAreaView style={styles.safe}>
                 {/* Title */}
-                <Text style={styles.title}>Personal Information</Text>
+                <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Personal Information</Text>
 
                 {/* Name */}
-                <Text style={styles.label}>Name</Text>
+                <Text style={[styles.label, { fontSize }]}>Name</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Name"
@@ -61,7 +65,7 @@ export default function PersonalInfo() {
                 />
 
                 {/* Age */}
-                <Text style={styles.label}>Age</Text>
+                <Text style={[styles.label, { fontSize }]}>Age</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Age"
@@ -72,7 +76,7 @@ export default function PersonalInfo() {
                 />
 
                 {/* Email */}
-                <Text style={styles.label}>Email</Text>
+                <Text style={[styles.label, { fontSize }]}>Email</Text>
                 <TextInput
                     placeholder="Email"
                     placeholderTextColor={COLORS.accentLight}
@@ -84,7 +88,7 @@ export default function PersonalInfo() {
 
                 {/* Save button */}
                 <Pressable style={styles.button} onPress={handleSave}>
-                    <Text style={styles.buttonText}>Save</Text>
+                    <Text style={[styles.buttonText, { fontSize }]}>Save</Text>
                 </Pressable>
             </SafeAreaView>
         </ImageBackground>

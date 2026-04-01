@@ -2,17 +2,20 @@ import { useState } from "react";
 import { Text, StyleSheet, Pressable, Alert, ScrollView, View, ImageBackground } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
 
 type PreviewOption = 'Always' | 'When Unlocked' | 'Never';
 
 export default function NotificationPreview() {
   const router = useRouter();
+  const { fontSize } = useContext(FontSizeContext);
   const [selectedOption, setSelectedOption] = useState<PreviewOption>('When Unlocked');
 
   const handleSave = () => {
     Alert.alert(
-      "Success", 
-      "Preview settings saved.", 
+      "Success",
+      "Preview settings saved.",
       [{ text: "OK", onPress: () => router.replace("/Notifications") }]
     );
   };
@@ -30,20 +33,20 @@ export default function NotificationPreview() {
       <SafeAreaView style={styles.safe}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.container}>
-            
+
             {/* Title */}
-            <Text style={styles.title}>Notification Preview</Text>
+            <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Notification Preview</Text>
 
             {/* Show message previews section */}
-            <Text style={styles.label}>Show message previews.</Text>
-            
+            <Text style={[styles.label, { fontSize }]}>Show message previews.</Text>
+
             {/* Options */}
             <View style={styles.optionsContainer}>
               <Pressable
                 style={styles.optionRow}
                 onPress={() => setSelectedOption('Always')}
               >
-                <Text style={styles.optionText}>Always</Text>
+                <Text style={[styles.optionText, { fontSize }]}>Always</Text>
                 <View style={[styles.radio, selectedOption === 'Always' && styles.radioSelected]}>
                   {selectedOption === 'Always' && <View style={styles.radioInner} />}
                 </View>
@@ -53,7 +56,7 @@ export default function NotificationPreview() {
                 style={styles.optionRow}
                 onPress={() => setSelectedOption('When Unlocked')}
               >
-                <Text style={styles.optionText}>When Unlocked</Text>
+                <Text style={[styles.optionText, { fontSize }]}>When Unlocked</Text>
                 <View style={[styles.radio, selectedOption === 'When Unlocked' && styles.radioSelected]}>
                   {selectedOption === 'When Unlocked' && <View style={styles.radioInner} />}
                 </View>
@@ -63,7 +66,7 @@ export default function NotificationPreview() {
                 style={styles.optionRow}
                 onPress={() => setSelectedOption('Never')}
               >
-                <Text style={styles.optionText}>Never</Text>
+                <Text style={[styles.optionText, { fontSize }]}>Never</Text>
                 <View style={[styles.radio, selectedOption === 'Never' && styles.radioSelected]}>
                   {selectedOption === 'Never' && <View style={styles.radioInner} />}
                 </View>
@@ -72,22 +75,22 @@ export default function NotificationPreview() {
 
             {/* Notification Preview Box */}
             <View style={styles.previewBox}>
-              <Text style={styles.previewTitle}>Food Log Reminder</Text>
+              <Text style={[styles.previewTitle, { fontSize: fontSize + 2 }]}>Food Log Reminder</Text>
               <View style={styles.previewDivider} />
-              <Text style={styles.previewMessage}>
-                {selectedOption === 'Always' ? "Don't forget to log your lunch today!" : 
-                 selectedOption === 'When Unlocked' ? "🔒 Message hidden until device is unlocked" : 
-                 "Preview disabled"}
+              <Text style={[styles.previewMessage, { fontSize }]}>
+                {selectedOption === 'Always' ? "Don't forget to log your lunch today!" :
+                  selectedOption === 'When Unlocked' ? "🔒 Message hidden until device is unlocked" :
+                    "Preview disabled"}
               </Text>
             </View>
 
             {/* Buttons */}
             <View style={styles.buttonRow}>
               <Pressable style={styles.cancelButton} onPress={handleCancel}>
-                <Text style={styles.cancelText}>Cancel</Text>
+                <Text style={[styles.cancelText, { fontSize }]}>Cancel</Text>
               </Pressable>
               <Pressable style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveText}>Save</Text>
+                <Text style={[styles.saveText, { fontSize }]}>Save</Text>
               </Pressable>
             </View>
           </View>

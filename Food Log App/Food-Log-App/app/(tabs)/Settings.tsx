@@ -2,9 +2,13 @@ import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
 import { ImageBackground } from "react-native";
+import { FontSizeContext } from "../components/FontSize";
+import { useContext } from "react";
 
 export default function Settings() {
     const router = useRouter();
+
+    const { fontSize } = useContext(FontSizeContext);
 
     return (
         <ImageBackground
@@ -15,17 +19,17 @@ export default function Settings() {
             <SafeAreaView style={styles.safe}>
 
                 {/* Title */}
-                <Text style={styles.title}>Settings</Text>
+                <Text style={[styles.title, { fontSize }]}>Settings</Text>
 
                 {/* Account Label */}
-                <Text style={styles.section}>Account</Text>
+                <Text style={[styles.section, { fontSize }]}>Account</Text>
 
                 {/* Personal Info Button */}
                 <Pressable
                     style={styles.row}
                     onPress={() => router.push("/PersonalInfo")}
                 >
-                    <Text style={styles.rowText}>Personal Information</Text>
+                    <Text style={[styles.rowText, { fontSize }]}>Personal Information</Text>
                 </Pressable>
 
                 {/* Privacy & Security Button */}
@@ -33,29 +37,29 @@ export default function Settings() {
                     style={styles.row}
                     onPress={() => router.push("/PriAndSec")}
                 >
-                    <Text style={styles.rowText}>Privacy & Security</Text>
+                    <Text style={[styles.rowText, { fontSize }]}>Privacy & Security</Text>
                 </Pressable>
 
                 {/* Accessibility Label */}
-                <Text style={styles.section}>Accessibility</Text>
+                <Text style={[styles.section, { fontSize }]}>Accessibility</Text>
 
                 {/* Text Size Button */}
                 <Pressable
                     style={styles.row}
                     onPress={() => router.push("/TextSize")}
                 >
-                    <Text style={styles.rowText}>Text Size</Text>
+                    <Text style={[styles.rowText, { fontSize }]}>Text Size</Text>
                 </Pressable>
 
                 {/* Notifications Label */}
-                <Text style={styles.section}>Notifications</Text>
+                <Text style={[styles.section, { fontSize }]}>Notifications</Text>
 
                 {/* Notification Button */}
                 <Pressable
                     style={styles.row}
                     onPress={() => router.push("/Notifications")}
                 >
-                    <Text style={styles.rowText}>Notifications</Text>
+                    <Text style={[styles.rowText, { fontSize }]}>Notifications</Text>
                 </Pressable>
 
             </SafeAreaView>
