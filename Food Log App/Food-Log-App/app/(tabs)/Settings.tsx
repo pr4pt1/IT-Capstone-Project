@@ -1,49 +1,65 @@
 import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
+import { ImageBackground } from "react-native";
 
 export default function Settings() {
     const router = useRouter();
 
     return (
-        <SafeAreaView style={styles.safe}>
+        <ImageBackground
+            source={require('@/assets/images/bg.png')}
+            style={styles.background}
+            resizeMode="cover"
+        >
+            <SafeAreaView style={styles.safe}>
 
-            {/* Title */}
-            <Text style={styles.title}>Settings</Text>
+                {/* Title */}
+                <Text style={styles.title}>Settings</Text>
 
-            {/* Personal Info Button */}
-            <Pressable
-                style={styles.row}
-                onPress={() => router.push("/PersonalInfo")}
-            >
-                <Text style={styles.rowText}>Personal Information</Text>
-            </Pressable>
+                {/* Account Label */}
+                <Text style={styles.section}>Account</Text>
 
-            {/* Privacy & Security Button */}
-            <Pressable
-                style={styles.row}
-                onPress={() => router.push("/PriAndSec")}
-            >
-                <Text style={styles.rowText}>Privacy & Security</Text>
-            </Pressable>
+                {/* Personal Info Button */}
+                <Pressable
+                    style={styles.row}
+                    onPress={() => router.push("/PersonalInfo")}
+                >
+                    <Text style={styles.rowText}>Personal Information</Text>
+                </Pressable>
 
-            {/* Notification Button */}
-            <Pressable
-                style={styles.row}
-                onPress={() => router.push("/Notifications")}
-            >
-                <Text style={styles.rowText}>Notifications</Text>
-            </Pressable>
+                {/* Privacy & Security Button */}
+                <Pressable
+                    style={styles.row}
+                    onPress={() => router.push("/PriAndSec")}
+                >
+                    <Text style={styles.rowText}>Privacy & Security</Text>
+                </Pressable>
 
-            {/* Text Size Button */}
-            <Pressable
-                style={styles.row}
-                onPress={() => router.push("/TextSize")}
-            >
-                <Text style={styles.rowText}>Text Size</Text>
-            </Pressable>
+                {/* Accessibility Label */}
+                <Text style={styles.section}>Accessibility</Text>
 
-        </SafeAreaView>
+                {/* Text Size Button */}
+                <Pressable
+                    style={styles.row}
+                    onPress={() => router.push("/TextSize")}
+                >
+                    <Text style={styles.rowText}>Text Size</Text>
+                </Pressable>
+
+                {/* Notifications Label */}
+                <Text style={styles.section}>Notifications</Text>
+
+                {/* Notification Button */}
+                <Pressable
+                    style={styles.row}
+                    onPress={() => router.push("/Notifications")}
+                >
+                    <Text style={styles.rowText}>Notifications</Text>
+                </Pressable>
+
+            </SafeAreaView>
+        </ImageBackground>
     );
 }
 
@@ -55,13 +71,26 @@ const COLORS = {
 };
 
 const styles = StyleSheet.create({
-    safe: { flex: 1, backgroundColor: COLORS.bgDark, padding: 20 },
+    background: {
+        flex: 1,
+    },
+
+    safe: { flex: 1, backgroundColor: "transparent", padding: 20 },
 
     title: {
         color: COLORS.inkLight,
         fontSize: 28,
         fontWeight: "700",
         marginBottom: 20,
+    },
+
+    section: {
+        color: "#D9E8B4",
+        fontSize: 13,
+        fontWeight: "700",
+        marginTop: 22,
+        marginBottom: 8,
+        letterSpacing: 1,
     },
 
     row: {

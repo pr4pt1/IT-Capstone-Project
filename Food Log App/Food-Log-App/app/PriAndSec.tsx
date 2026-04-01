@@ -9,6 +9,7 @@ import { useContext } from "react";
 import { FontSizeContext } from "../components/FontSize";
 import { Switch } from "react-native";
 import { View } from "react-native";
+import { ImageBackground } from "react-native";
 
 export default function PriAndSec() {
 
@@ -37,25 +38,35 @@ export default function PriAndSec() {
     };
 
     return (
-        <SafeAreaView style={styles.safe}>
-            <View style={styles.card}>
-                <Text style={[styles.title, { fontSize }]}>Share Your Data</Text>
-                <Text style={[styles.description, { fontSize: fontSize - 2 }]}>Help us improve!</Text>
-                <Switch
-                    value={isOn}
-                    onValueChange={toggleSwitch}
-                    trackColor={{ false: "#444", true: "#D9E8B4" }}
-                    thumbColor={isOn ? "#0B0B0B" : "#ccc"}
-                />
-            </View>
-        </SafeAreaView>
+        <ImageBackground
+            source={require('@/assets/images/bg.png')}
+            style={styles.background}
+            resizeMode="cover"
+        >
+            <SafeAreaView style={styles.safe}>
+                <View style={styles.card}>
+                    <Text style={[styles.title, { fontSize }]}>Share Your Data</Text>
+                    <Text style={[styles.description, { fontSize: fontSize - 2 }]}>Help us improve!</Text>
+                    <Switch
+                        value={isOn}
+                        onValueChange={toggleSwitch}
+                        trackColor={{ false: "#444", true: "#D9E8B4" }}
+                        thumbColor={isOn ? "#0B0B0B" : "#ccc"}
+                    />
+                </View>
+            </SafeAreaView>
+        </ImageBackground>
     );
 }
 
 // Font size, colors and weights
 const styles = StyleSheet.create
     ({
-        safe: { flex: 1, padding: 20, backgroundColor: "#0B0B0B" },
+        background: {
+            flex: 1,
+        },
+
+        safe: { flex: 1, backgroundColor: "transparent", padding: 20 },
 
         title:
         {
