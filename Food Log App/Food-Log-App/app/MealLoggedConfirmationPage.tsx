@@ -18,9 +18,7 @@ export default function MealLoggedConfirmationPage() {
 
   const entry = params.data ? JSON.parse(params.data as string) : null;
 
-  /* =========================
-     SAVE TO FIREBASE
-  ========================= */
+  
   useEffect(() => {
   const saveMeal = async () => {
     if (!entry) return;
@@ -56,9 +54,7 @@ export default function MealLoggedConfirmationPage() {
   saveMeal();
 }, []);
 
-  /* =========================
-     UI
-  ========================= */
+  
   return (
     <ImageBackground
       source={require("@/assets/images/bg.png")}
@@ -95,9 +91,7 @@ export default function MealLoggedConfirmationPage() {
   );
 }
 
-/* =========================
-   STYLES (UNCHANGED)
-========================= */
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
