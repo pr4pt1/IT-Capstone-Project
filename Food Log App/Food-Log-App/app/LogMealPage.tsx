@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { Text, StyleSheet, ScrollView, Pressable, ImageBackground,TextInput, View,} 
-from 'react-native';
+import { Text, StyleSheet, ScrollView, Pressable, ImageBackground, TextInput, View, }
+  from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -49,22 +49,22 @@ export default function LogMealPage() {
     }
 
     const entry = {
-  date: new Date().toISOString().split('T')[0],
-  timestamp: new Date().toISOString(),
-  mealName,
-  mealType,
-  ingredients,
+      date: new Date().toISOString().split('T')[0],
+      timestamp: new Date().toISOString(),
+      mealName,
+      mealType,
+      ingredients,
 
-  calories: Number(calories) || 0,
-  protein: Number(protein) || 0,
-  carbs: Number(carbs) || 0,
-  fat: Number(fat) || 0,
+      calories: Number(calories) || 0,
+      protein: Number(protein) || 0,
+      carbs: Number(carbs) || 0,
+      fat: Number(fat) || 0,
 
-  allergens,
-};
+      allergens,
+    };
 
     try {
-    
+
 
       router.push({
         pathname: '/MealLoggedConfirmationPage',
@@ -120,7 +120,7 @@ export default function LogMealPage() {
                   mealType === type && styles.typeSelected,
                 ]}
               >
-                <Text style={{ color: mealType === type ? '#fff' : '#000', fontSize }}>
+                <Text style={{ color: mealType === type ? '#fff' : '#000', fontSize: fontSize - 10 }}>
                   {type}
                 </Text>
               </Pressable>
