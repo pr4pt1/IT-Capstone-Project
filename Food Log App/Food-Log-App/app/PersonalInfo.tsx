@@ -1,47 +1,87 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from "react";
-import { Text } from "react-native";
-import { TextInput } from "react-native";
-import { StyleSheet } from "react-native";
-import { Pressable } from "react-native";
-import { Alert } from "react-native";
-import { ImageBackground } from "react-native";
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import { Text, TextInput, StyleSheet, Pressable, Alert, ImageBackground } from "react-native";
 import { FontSizeContext } from "../components/FontSize";
 
+import { auth, db } from "@/firebaseConfig";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
 export default function PersonalInfo() {
-    //User info
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [email, setEmail] = useState("");
+
     const { fontSize } = useContext(FontSizeContext);
 
-    const handleSave = () => {
+    useEffect(() => {
+        const loadUserData = async () => {
+            const user = auth.currentUser;
 
+            if (!user) return;
 
-        //Check for empty fields
+            try {
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+
+                    setName(data.name ?? "");
+                    setAge(data.age ? String(data.age) : "");
+                    setEmail(data.email ?? "");
+                }
+            } catch (error) {
+                console.log("Error loading user data:", error);
+            }
+        };
+
+        loadUserData();
+    }, []);
+
+    // =========================
+    // SAVE UPDATED DATA
+    // =========================
+    const handleSave = async () => {
         if (!email.trim() || !name.trim() || !age.trim()) {
             Alert.alert("Empty field", "Please enter text in all fields.");
             return;
         }
 
-        //Check for valid age
         const ageNum = Number(age);
         if (isNaN(ageNum) || ageNum <= 0) {
             Alert.alert("Invalid field", "Please enter a valid age.");
             return;
         }
 
-        //Check for valid email
         const emailRegex = /\S+@\S+\.\S+/;
         if (!emailRegex.test(email)) {
             Alert.alert("Invalid email", "Please enter a valid email address.");
             return;
         }
 
-        //Save user info
-        console.log("The following has been saved:", { name, age, email });
-        alert("Your info has been saved.");
+        const user = auth.currentUser;
+        if (!user) {
+            Alert.alert("Error", "No user logged in.");
+            return;
+        }
+
+        try {
+            await setDoc(
+                doc(db, "users", user.uid),
+                {
+                    name,
+                    age: ageNum,
+                    email,
+                    updatedAt: new Date().toISOString(),
+                },
+                { merge: true } // IMPORTANT: prevents overwriting other fields like username
+            );
+
+            Alert.alert("Success", "Your info has been updated.");
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Error", "Could not save data.");
+        }
     };
 
     return (
@@ -51,10 +91,10 @@ export default function PersonalInfo() {
             resizeMode="cover"
         >
             <SafeAreaView style={styles.safe}>
-                {/* Title */}
-                <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Personal Information</Text>
+                <Text style={[styles.title, { fontSize: fontSize + 8 }]}>
+                    Personal Information
+                </Text>
 
-                {/* Name */}
                 <Text style={[styles.label, { fontSize }]}>Name</Text>
                 <TextInput
                     style={styles.input}
@@ -64,7 +104,6 @@ export default function PersonalInfo() {
                     onChangeText={setName}
                 />
 
-                {/* Age */}
                 <Text style={[styles.label, { fontSize }]}>Age</Text>
                 <TextInput
                     style={styles.input}
@@ -75,7 +114,6 @@ export default function PersonalInfo() {
                     keyboardType="numeric"
                 />
 
-                {/* Email */}
                 <Text style={[styles.label, { fontSize }]}>Email</Text>
                 <TextInput
                     placeholder="Email"
@@ -86,7 +124,6 @@ export default function PersonalInfo() {
                     keyboardType="email-address"
                 />
 
-                {/* Save button */}
                 <Pressable style={styles.button} onPress={handleSave}>
                     <Text style={[styles.buttonText, { fontSize }]}>Save</Text>
                 </Pressable>
@@ -103,16 +140,11 @@ const COLORS = {
 };
 
 const styles = StyleSheet.create({
-    background: {
-        flex: 1,
-    },
-
+    background: { flex: 1 },
     safe: { flex: 1, backgroundColor: "transparent", padding: 20 },
-
 
     title: {
         color: COLORS.inkLight,
-        fontSize: 28,
         fontWeight: "700",
         marginBottom: 12,
     },
@@ -121,14 +153,12 @@ const styles = StyleSheet.create({
         color: COLORS.inkLight,
         marginBottom: 6,
         marginTop: 10,
-        fontSize: 14,
     },
 
     input: {
         backgroundColor: COLORS.accentLight,
         padding: 14,
         borderRadius: 14,
-        alignItems: "center",
         marginBottom: 12,
     },
 
@@ -143,6 +173,5 @@ const styles = StyleSheet.create({
     buttonText: {
         color: COLORS.bgDark,
         fontWeight: "700",
-        fontSize: 16,
     },
 });

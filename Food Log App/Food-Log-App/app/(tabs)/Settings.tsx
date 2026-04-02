@@ -5,10 +5,21 @@ import { ImageBackground } from "react-native";
 import { FontSizeContext } from "@/components/FontSize";
 import { useContext } from "react";
 
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebaseConfig";
+
 export default function Settings() {
     const router = useRouter();
-
     const { fontSize } = useContext(FontSizeContext);
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            router.replace("/LoginPage");
+        } catch (error) {
+            console.log("Logout error:", error);
+        }
+    };
 
     return (
         <ImageBackground
@@ -24,42 +35,63 @@ export default function Settings() {
                 {/* Account Label */}
                 <Text style={[styles.section, { fontSize }]}>Account</Text>
 
-                {/* Personal Info Button */}
                 <Pressable
                     style={styles.row}
                     onPress={() => router.push("/PersonalInfo")}
                 >
-                    <Text style={[styles.rowText, { fontSize }]}>Personal Information</Text>
+                    <Text style={[styles.rowText, { fontSize }]}>
+                        Personal Information
+                    </Text>
                 </Pressable>
 
-                {/* Privacy & Security Button */}
                 <Pressable
                     style={styles.row}
                     onPress={() => router.push("/PriAndSec")}
                 >
-                    <Text style={[styles.rowText, { fontSize }]}>Privacy & Security</Text>
+                    <Text style={[styles.rowText, { fontSize }]}>
+                        Privacy & Security
+                    </Text>
                 </Pressable>
 
                 {/* Accessibility Label */}
                 <Text style={[styles.section, { fontSize }]}>Accessibility</Text>
 
-                {/* Text Size Button */}
                 <Pressable
                     style={styles.row}
                     onPress={() => router.push("/TextSize")}
                 >
-                    <Text style={[styles.rowText, { fontSize }]}>Text Size</Text>
+                    <Text style={[styles.rowText, { fontSize }]}>
+                        Text Size
+                    </Text>
                 </Pressable>
 
                 {/* Notifications Label */}
                 <Text style={[styles.section, { fontSize }]}>Notifications</Text>
 
-                {/* Notification Button */}
                 <Pressable
                     style={styles.row}
                     onPress={() => router.push("/Notifications")}
                 >
-                    <Text style={[styles.rowText, { fontSize }]}>Notifications</Text>
+                    <Text style={[styles.rowText, { fontSize }]}>
+                        Notifications
+                    </Text>
+                </Pressable>
+
+                {/* ===================== */}
+                {/* LOGOUT SECTION (BOTTOM) */}
+                {/* ===================== */}
+
+                <Text style={[styles.section, { fontSize, marginTop: 40 }]}>
+                    Logout
+                </Text>
+
+                <Pressable
+                    style={styles.row}
+                    onPress={handleLogout}
+                >
+                    <Text style={[styles.rowText, { fontSize }]}>
+                        Log Out
+                    </Text>
                 </Pressable>
 
             </SafeAreaView>
@@ -79,7 +111,11 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 
-    safe: { flex: 1, backgroundColor: "transparent", padding: 20 },
+    safe: {
+        flex: 1,
+        backgroundColor: "transparent",
+        padding: 20
+    },
 
     title: {
         color: COLORS.inkLight,

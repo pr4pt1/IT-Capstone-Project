@@ -1,9 +1,5 @@
-import {
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable
-} from 'react-native';
+import {Text, StyleSheet, ScrollView, Pressable} 
+from 'react-native';
 
 import { useRouter } from 'expo-router';
 import { useState, useEffect, useContext } from 'react';
@@ -15,7 +11,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { FontSizeContext } from "@/components/FontSize";
 
-// 🔥 FIREBASE
+// FIREBASE
 import { auth, db } from "@/firebaseConfig";
 import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
 
@@ -37,15 +33,11 @@ export default function WelcomePage() {
     { name: 'Fat', consumed: 0, goal: 70 },
   ]);
 
-  /* =========================
-     WATER STATE
-  ========================= */
+  
   const [waterGlasses, setWaterGlasses] = useState(0);
   const waterGoal = 8;
 
-  /* =========================
-     DATE HANDLING
-  ========================= */
+ 
   const changeDay = (direction: number) => {
     const newDate = new Date(currentDate);
     newDate.setDate(currentDate.getDate() + direction);
@@ -60,9 +52,7 @@ export default function WelcomePage() {
 
   const selectedDateKey = currentDate.toISOString().split("T")[0];
 
-  /* =========================
-     FIREBASE LISTENER
-  ========================= */
+  
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
@@ -82,9 +72,7 @@ export default function WelcomePage() {
     return () => unsub();
   }, []);
 
-  /* =========================
-     PROCESS DAILY DATA
-  ========================= */
+  
   useEffect(() => {
     const dayData = allLogs?.[selectedDateKey] || {};
     let meals = dayData.meals || [];
@@ -124,12 +112,9 @@ export default function WelcomePage() {
 
   const caloriesRemaining = calorieGoal - caloriesConsumed;
 
-  // 🔥 CLAMP PROGRESS (FIX)
   const calorieProgress = Math.min(caloriesConsumed / calorieGoal, 1);
 
-  /* =========================
-     WATER SAVE
-  ========================= */
+  
   const updateWater = async (newValue: number) => {
     try {
       const user = auth.currentUser;
