@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert,} 
-from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, }
+  from 'react-native';
 import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
 import { FontSizeContext } from "../components/FontSize";
@@ -78,8 +78,8 @@ export default function SymptomsScreen() {
             style={[styles.moodButton, mood === m.value && styles.moodSelected]}
             onPress={() => setMood(m.value)}
           >
-            <Text style={{ fontSize: fontSize + 5 }}>{m.label}</Text>
-            <Text style={{ fontSize: fontSize - 5 }}>{m.text}</Text>
+            <Text style={{ fontSize: fontSize - 10 }}>{m.label}</Text>
+            <Text style={{ fontSize: fontSize - 10 }}>{m.text}</Text>
           </TouchableOpacity>
         ))}
       </View>
