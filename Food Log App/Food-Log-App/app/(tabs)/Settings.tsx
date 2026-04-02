@@ -118,14 +118,14 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        color: COLORS.inkLight,
+        color: "#000000",
         fontSize: 28,
         fontWeight: "700",
         marginBottom: 20,
     },
 
     section: {
-        color: "#D9E8B4",
+        color: "#254117",
         fontSize: 13,
         fontWeight: "700",
         marginTop: 22,
