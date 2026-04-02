@@ -144,13 +144,13 @@ const styles = StyleSheet.create({
     safe: { flex: 1, backgroundColor: "transparent", padding: 20 },
 
     title: {
-        color: COLORS.inkLight,
+        color: "#000000",
         fontWeight: "700",
         marginBottom: 12,
     },
 
     label: {
-        color: COLORS.inkLight,
+        color: "#254117",
         marginBottom: 6,
         marginTop: 10,
     },
