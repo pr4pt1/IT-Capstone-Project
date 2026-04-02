@@ -5,14 +5,19 @@ import { TextInput } from "react-native";
 import { StyleSheet } from "react-native";
 import { Pressable } from "react-native";
 import { Alert } from "react-native";
+import { ImageBackground } from "react-native";
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
 
 export default function PersonalInfo() {
     //User info
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [email, setEmail] = useState("");
+    const { fontSize } = useContext(FontSizeContext);
 
     const handleSave = () => {
+
 
         //Check for empty fields
         if (!email.trim() || !name.trim() || !age.trim()) {
@@ -40,47 +45,53 @@ export default function PersonalInfo() {
     };
 
     return (
-        <SafeAreaView style={styles.safe}>
-            {/* Title */}
-            <Text style={styles.title}>Personal Information</Text>
+        <ImageBackground
+            source={require('@/assets/images/bg.png')}
+            style={styles.background}
+            resizeMode="cover"
+        >
+            <SafeAreaView style={styles.safe}>
+                {/* Title */}
+                <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Personal Information</Text>
 
-            {/* Name */}
-            <Text style={styles.label}>Name</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Name"
-                placeholderTextColor={COLORS.accentLight}
-                value={name}
-                onChangeText={setName}
-            />
+                {/* Name */}
+                <Text style={[styles.label, { fontSize }]}>Name</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Name"
+                    placeholderTextColor={COLORS.accentLight}
+                    value={name}
+                    onChangeText={setName}
+                />
 
-            {/* Age */}
-            <Text style={styles.label}>Age</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Age"
-                placeholderTextColor={COLORS.accentLight}
-                value={age}
-                onChangeText={setAge}
-                keyboardType="numeric"
-            />
+                {/* Age */}
+                <Text style={[styles.label, { fontSize }]}>Age</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Age"
+                    placeholderTextColor={COLORS.accentLight}
+                    value={age}
+                    onChangeText={setAge}
+                    keyboardType="numeric"
+                />
 
-            {/* Email */}
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-                placeholder="Email"
-                placeholderTextColor={COLORS.accentLight}
-                value={email}
-                onChangeText={setEmail}
-                style={styles.input}
-                keyboardType="email-address"
-            />
+                {/* Email */}
+                <Text style={[styles.label, { fontSize }]}>Email</Text>
+                <TextInput
+                    placeholder="Email"
+                    placeholderTextColor={COLORS.accentLight}
+                    value={email}
+                    onChangeText={setEmail}
+                    style={styles.input}
+                    keyboardType="email-address"
+                />
 
-            {/* Save button */}
-            <Pressable style={styles.button} onPress={handleSave}>
-                <Text style={styles.buttonText}>Save</Text>
-            </Pressable>
-        </SafeAreaView>
+                {/* Save button */}
+                <Pressable style={styles.button} onPress={handleSave}>
+                    <Text style={[styles.buttonText, { fontSize }]}>Save</Text>
+                </Pressable>
+            </SafeAreaView>
+        </ImageBackground>
     );
 }
 
@@ -92,7 +103,12 @@ const COLORS = {
 };
 
 const styles = StyleSheet.create({
-    safe: { flex: 1, backgroundColor: COLORS.bgDark, padding: 20 },
+    background: {
+        flex: 1,
+    },
+
+    safe: { flex: 1, backgroundColor: "transparent", padding: 20 },
+
 
     title: {
         color: COLORS.inkLight,
@@ -110,7 +126,6 @@ const styles = StyleSheet.create({
 
     input: {
         backgroundColor: COLORS.accentLight,
-        marginTop: 24,
         padding: 14,
         borderRadius: 14,
         alignItems: "center",

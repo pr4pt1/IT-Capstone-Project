@@ -1,9 +1,12 @@
 import { Text, StyleSheet, Pressable, View, ImageBackground } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
 
 export default function Notifications() {
   const router = useRouter();
+  const { fontSize } = useContext(FontSizeContext);
 
   return (
     <ImageBackground
@@ -13,13 +16,13 @@ export default function Notifications() {
     >
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
-          
+
           {/* Header with back button */}
           <View style={styles.header}>
             <Pressable onPress={() => router.back()} style={styles.backButton}>
-              <Text style={styles.backText}>←</Text>
+              <Text style={[styles.backText, { fontSize: fontSize + 8 }]}>←</Text>
             </Pressable>
-            <Text style={styles.title}>Notifications</Text>
+            <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Notifications</Text>
             <View style={styles.placeholder} />
           </View>
 
@@ -28,7 +31,7 @@ export default function Notifications() {
             style={styles.option}
             onPress={() => router.push("/NotificationSound")}
           >
-            <Text style={styles.optionText}>Notification Sound</Text>
+            <Text style={[styles.optionText, { fontSize }]}>Notification Sound</Text>
           </Pressable>
 
           {/* Notification Preview Option */}
@@ -36,7 +39,7 @@ export default function Notifications() {
             style={styles.option}
             onPress={() => router.push("/NotificationPreview")}
           >
-            <Text style={styles.optionText}>Notification Preview</Text>
+            <Text style={[styles.optionText, { fontSize }]}>Notification Preview</Text>
           </Pressable>
 
         </View>

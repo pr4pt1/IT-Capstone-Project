@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import {Text,StyleSheet,ScrollView,Pressable,ImageBackground,TextInput,View,
+import {
+  Text, StyleSheet, ScrollView, Pressable, ImageBackground, TextInput, View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
 
 type AllergenKeys = 'dairy' | 'nuts' | 'gluten';
 
 export default function LogMealPage() {
   const router = useRouter();
+  const { fontSize } = useContext(FontSizeContext);
 
   const [mealName, setMealName] = useState<string>('');
   const [ingredients, setIngredients] = useState<string>('');
@@ -27,22 +31,22 @@ export default function LogMealPage() {
   };
 
   const handleSave = (): void => {
-  const entry = {
-    date: new Date().toISOString().split('T')[0], // ADD THIS
-    mealName,
-    ingredients,
-    calories,
-    allergens,
-    timestamp: new Date().toISOString(),
-  };
+    const entry = {
+      date: new Date().toISOString().split('T')[0], // ADD THIS
+      mealName,
+      ingredients,
+      calories,
+      allergens,
+      timestamp: new Date().toISOString(),
+    };
 
-  router.push({
-    pathname: '/MealLoggedConfirmationPage',
-    params: {
-      data: JSON.stringify(entry),
-    },
-  });
-};
+    router.push({
+      pathname: '/MealLoggedConfirmationPage',
+      params: {
+        data: JSON.stringify(entry),
+      },
+    });
+  };
 
   const formattedDate: string = new Date().toLocaleString();
 
@@ -54,31 +58,31 @@ export default function LogMealPage() {
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <ThemedView style={styles.container}>
-          
+
           {/* Title */}
-          <ThemedText type="title" style={styles.title}>
+          <ThemedText type="title" style={[styles.title, { fontSize: fontSize + 8 }]}>
             Log Your Meal
           </ThemedText>
 
           {/* Date & Time */}
-          <Text style={styles.label}>Date & Time</Text>
+          <Text style={[styles.label, { fontSize }]}>Date & Time</Text>
           <View style={styles.box}>
-            <Text>{formattedDate}</Text>
+            <Text style={{ fontSize }}>{formattedDate}</Text>
           </View>
 
           {/* Meal Name */}
-          <Text style={styles.label}>Meal Name</Text>
+          <Text style={[styles.label, { fontSize }]}>Meal Name</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { fontSize }]}
             placeholder="Ex: Grilled Chicken Salad"
             value={mealName}
             onChangeText={setMealName}
           />
 
           {/* Ingredients */}
-          <Text style={styles.label}>Ingredients</Text>
+          <Text style={[styles.label, { fontSize }]}>Ingredients</Text>
           <TextInput
-            style={[styles.input, { height: 80 }]}
+            style={[styles.input, { height: 80, fontSize }]}
             placeholder="List ingredients..."
             value={ingredients}
             onChangeText={setIngredients}
@@ -86,9 +90,9 @@ export default function LogMealPage() {
           />
 
           {/* Estimated Calories */}
-          <Text style={styles.label}>Estimated Calories</Text>
+          <Text style={[styles.label, { fontSize }]}>Estimated Calories</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { fontSize }]}
             placeholder="Ex: 450"
             value={calories}
             onChangeText={setCalories}
@@ -96,7 +100,7 @@ export default function LogMealPage() {
           />
 
           {/* Flag Allergens */}
-          <Text style={styles.label}>Flag Potential Allergens</Text>
+          <Text style={[styles.label, { fontSize }]}>Flag Potential Allergens</Text>
           <View style={styles.allergenRow}>
             {(['dairy', 'nuts', 'gluten'] as AllergenKeys[]).map((item) => (
               <Pressable
@@ -107,7 +111,7 @@ export default function LogMealPage() {
                 ]}
                 onPress={() => toggleAllergen(item)}
               >
-                <Text style={styles.allergenText}>
+                <Text style={[styles.allergenText, { fontSize }]}>
                   {item.charAt(0).toUpperCase() + item.slice(1)}
                 </Text>
               </Pressable>
@@ -116,7 +120,7 @@ export default function LogMealPage() {
 
           {/* Save Button */}
           <Pressable style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>Save Meal</Text>
+            <Text style={[styles.buttonText, { fontSize }]}>Save Meal</Text>
           </Pressable>
 
         </ThemedView>

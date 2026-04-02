@@ -9,9 +9,13 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
+
 
 export default function SymptomsScreen() {
   const router = useRouter();
+  const { fontSize } = useContext(FontSizeContext);
 
   const [symptoms, setSymptoms] = useState('');
   const [mood, setMood] = useState('');
@@ -48,16 +52,16 @@ export default function SymptomsScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Log Symptoms</Text>
+      <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Log Symptoms</Text>
 
       {/* Date & Time */}
-      <Text style={styles.label}>Date & Time</Text>
+      <Text style={[styles.label, { fontSize }]}>Date & Time</Text>
       <View style={styles.box}>
-        <Text>{formattedDate}</Text>
+        <Text style={{ fontSize }}>{formattedDate}</Text>
       </View>
 
       {/* Describe Symptoms */}
-      <Text style={styles.label}>Describe Symptoms</Text>
+      <Text style={[styles.label, { fontSize }]}>Describe Symptoms</Text>
       <TextInput
         style={styles.input}
         placeholder="Ex: Stomach pain, bloating"
@@ -67,7 +71,7 @@ export default function SymptomsScreen() {
       />
 
       {/* Mood After Eating */}
-      <Text style={styles.label}>Mood</Text>
+      <Text style={[styles.label, { fontSize }]}>Mood</Text>
       <View style={styles.moodRow}>
         {moods.map((m) => (
           <TouchableOpacity
@@ -75,16 +79,16 @@ export default function SymptomsScreen() {
             style={[styles.moodButton, mood === m.value && styles.moodSelected]}
             onPress={() => setMood(m.value)}
           >
-            <Text style={styles.moodEmoji}>{m.label}</Text>
-            <Text style={styles.moodLabel}>{m.text}</Text>
+            <Text style={[styles.moodEmoji, { fontSize: fontSize + 5 }]}>{m.label}</Text>
+            <Text style={[styles.moodLabel, { fontSize: fontSize - 5 }]}>{m.text}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
       {/* Severity Slider */}
-      <Text style={styles.label}>Symptoms Severity</Text>
+      <Text style={[styles.label, { fontSize }]}>Symptoms Severity</Text>
       <View style={styles.sliderRow}>
-        <Text style={styles.sliderLabel}>1</Text>
+        <Text style={[styles.sliderLabel, { fontSize }]}>1</Text>
         <Slider
           style={{ flex: 1 }}
           minimumValue={1}
@@ -96,12 +100,12 @@ export default function SymptomsScreen() {
           thumbTintColor="#636B2F"
           onValueChange={setSeverity}
         />
-        <Text style={styles.sliderLabel}>10</Text>
+        <Text style={[styles.sliderLabel, { fontSize }]}>10</Text>
       </View>
-      <Text style={styles.severityValue}>Severity: {severity}</Text>
+      <Text style={[styles.severityValue, { fontSize }]}>Severity: {severity}</Text>
 
       {/* Additional Notes */}
-      <Text style={styles.label}>Additional Notes</Text>
+      <Text style={[styles.label, { fontSize }]}>Additional Notes</Text>
       <TextInput
         style={styles.notesInput}
         placeholder="Anything else to add?"
@@ -113,117 +117,113 @@ export default function SymptomsScreen() {
 
       {/* Save Button */}
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save Symptoms</Text>
+        <Text style={[styles.saveButtonText, { fontSize }]}>Save Symptoms</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  moodEmoji: { fontSize: 28 
+
+
+  moodLabel: {
+    marginTop: 4, color: '#3D4127',
+    textAlign: 'center'
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#BAC095',
+    padding: 20
   },
 
-  moodLabel: { fontSize: 10, 
-    marginTop: 4, color: '#3D4127', 
-    textAlign: 'center' 
-  },
-  container: { 
-    flex: 1, 
-    backgroundColor: '#BAC095', 
-    padding: 20 
+  title: {
+    fontWeight: '700',
+    color: '#3D4127',
+    textAlign: 'center',
+    marginBottom: 20
   },
 
-  title: { 
-    fontSize: 26, 
-    fontWeight: '700', 
-    color: '#3D4127', 
-    textAlign: 'center', 
-    marginBottom: 20 
+  label: {
+    fontWeight: '600',
+    color: '#3D4127',
+    marginTop: 15
   },
 
-  label: { 
-    fontSize: 16, 
-    fontWeight: '600', 
-    color: '#3D4127', 
-    marginTop: 15 
+  box: {
+    backgroundColor: '#ffffffaa',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 6
   },
 
-  box: { 
-    backgroundColor: '#ffffffaa', 
-    padding: 12, 
-    borderRadius: 8, 
-    marginTop: 6 
-  },
-
-  input: { 
-    backgroundColor: '#DDE3C2', 
-    borderRadius: 10, 
-    padding: 12, 
-    marginTop: 8, 
+  input: {
+    backgroundColor: '#DDE3C2',
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 8,
     color: '#3D4127'
   },
 
-  notesInput: { 
-    backgroundColor: '#DDE3C2', 
-    borderRadius: 10, 
-    padding: 12, 
-    marginTop: 8, 
-    height: 90, color: '#3D4127' 
+  notesInput: {
+    backgroundColor: '#DDE3C2',
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 8,
+    height: 90, color: '#3D4127'
   },
 
-  moodRow: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    marginTop: 10 
+  moodRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10
   },
 
-  sliderRow: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginTop: 10 
+  sliderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10
   },
 
-  sliderLabel: { 
-    color: '#3D4127', 
-    fontWeight: '600', 
-    marginHorizontal: 5 
+  sliderLabel: {
+    color: '#3D4127',
+    fontWeight: '600',
+    marginHorizontal: 5
   },
 
-  severityValue: { 
-    textAlign: 'center', 
-    color: '#3D4127', 
-    marginTop: 5, 
-    fontWeight: '600' 
+  severityValue: {
+    textAlign: 'center',
+    color: '#3D4127',
+    marginTop: 5,
+    fontWeight: '600'
   },
 
-  saveButton: { 
-    backgroundColor: '#636B2F', 
-    padding: 15, 
-    borderRadius: 10, 
-    marginTop: 25 
+  saveButton: {
+    backgroundColor: '#636B2F',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 25
   },
 
-  saveButtonText: { 
-    color: '#fff', 
-    textAlign: 'center', 
-    fontWeight: '700', 
-    fontSize: 16 
+  saveButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '700',
   },
 
-  moodButton: { 
-    width: 60, 
-    height: 70, 
-    borderRadius: 12, 
-    borderWidth: 2, 
-    borderColor: '#3D4127', 
-    backgroundColor: '#DDE3C2', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    paddingVertical: 5 
+  moodButton: {
+    width: 60,
+    height: 70,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#3D4127',
+    backgroundColor: '#DDE3C2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 5
   },
 
-  moodSelected: { 
-    backgroundColor: '#636B2F', 
-    borderColor: '#636B2F' 
+  moodSelected: {
+    backgroundColor: '#636B2F',
+    borderColor: '#636B2F'
   },
 });

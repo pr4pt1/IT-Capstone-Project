@@ -5,6 +5,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useContext } from "react";
+import { FontSizeContext } from "../components/FontSize";
 
 // Type for saved entries
 type SymptomEntry = {
@@ -28,6 +30,7 @@ type IncomingEntry = {
 
 export default function SymptomLoggedConfirmationPage() {
   const router = useRouter();
+  const { fontSize } = useContext(FontSizeContext);
   const params = useLocalSearchParams();
 
   const entry: IncomingEntry | null = params.data
@@ -79,7 +82,7 @@ export default function SymptomLoggedConfirmationPage() {
             resizeMode="contain"
           />
 
-          <ThemedText type="title" style={styles.title}>
+          <ThemedText type="title" style={[styles.title, { fontSize: fontSize + 4 }]}>
             Symptoms Logged <Ionicons name="checkmark" size={32} color="green" />
           </ThemedText>
 
@@ -87,7 +90,7 @@ export default function SymptomLoggedConfirmationPage() {
             style={styles.button}
             onPress={() => router.push('/Calendar')}
           >
-            <Text style={styles.buttonText}>Continue</Text>
+            <Text style={[styles.buttonText, { fontSize }]}>Continue</Text>
           </Pressable>
         </ThemedView>
       </ScrollView>
@@ -119,7 +122,6 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: '#fff',
-    fontSize: 18,
     fontWeight: 'bold',
   },
 
