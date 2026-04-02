@@ -1,54 +1,84 @@
-import React, { useState } from 'react';
-import {
-  Text, StyleSheet, ScrollView, Pressable, ImageBackground, TextInput, View,
-} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { Text, StyleSheet, ScrollView, Pressable, ImageBackground,TextInput, View,} 
+from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useContext } from "react";
 import { FontSizeContext } from "../components/FontSize";
 
+// Firebase
+import { auth, db } from '@/firebaseConfig';
+import { collection, addDoc } from 'firebase/firestore';
+
 type AllergenKeys = 'dairy' | 'nuts' | 'gluten';
+type MealType = 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack';
 
 export default function LogMealPage() {
   const router = useRouter();
   const { fontSize } = useContext(FontSizeContext);
 
-  const [mealName, setMealName] = useState<string>('');
-  const [ingredients, setIngredients] = useState<string>('');
-  const [calories, setCalories] = useState<string>('');
+  const [mealName, setMealName] = useState('');
+  const [ingredients, setIngredients] = useState('');
+  const [calories, setCalories] = useState('');
+
+  const [protein, setProtein] = useState('');
+  const [carbs, setCarbs] = useState('');
+  const [fat, setFat] = useState('');
+
+  const [mealType, setMealType] = useState<MealType>('Breakfast');
+
   const [allergens, setAllergens] = useState<Record<AllergenKeys, boolean>>({
     dairy: false,
     nuts: false,
     gluten: false,
   });
 
-  const toggleAllergen = (key: AllergenKeys): void => {
-    setAllergens((prev) => ({
+  const toggleAllergen = (key: AllergenKeys) => {
+    setAllergens(prev => ({
       ...prev,
       [key]: !prev[key],
     }));
   };
 
-  const handleSave = (): void => {
-    const entry = {
-      date: new Date().toISOString().split('T')[0], // ADD THIS
-      mealName,
-      ingredients,
-      calories,
-      allergens,
-      timestamp: new Date().toISOString(),
-    };
+  const handleSave = async () => {
+    const user = auth.currentUser;
 
-    router.push({
-      pathname: '/MealLoggedConfirmationPage',
-      params: {
-        data: JSON.stringify(entry),
-      },
-    });
+    if (!user) {
+      console.log("No user logged in");
+      return;
+    }
+
+    const entry = {
+  date: new Date().toISOString().split('T')[0],
+  timestamp: new Date().toISOString(),
+  mealName,
+  mealType,
+  ingredients,
+
+  calories: Number(calories) || 0,
+  protein: Number(protein) || 0,
+  carbs: Number(carbs) || 0,
+  fat: Number(fat) || 0,
+
+  allergens,
+};
+
+    try {
+    
+
+      router.push({
+        pathname: '/MealLoggedConfirmationPage',
+        params: {
+          data: JSON.stringify(entry),
+        },
+      });
+
+    } catch (error) {
+      console.log("Error saving meal:", error);
+    }
   };
 
-  const formattedDate: string = new Date().toLocaleString();
+  const formattedDate = new Date().toLocaleString();
 
   return (
     <ImageBackground
@@ -59,18 +89,17 @@ export default function LogMealPage() {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <ThemedView style={styles.container}>
 
-          {/* Title */}
           <ThemedText type="title" style={[styles.title, { fontSize: fontSize + 8 }]}>
             Log Your Meal
           </ThemedText>
 
-          {/* Date & Time */}
+          {/* DATE */}
           <Text style={[styles.label, { fontSize }]}>Date & Time</Text>
           <View style={styles.box}>
             <Text style={{ fontSize }}>{formattedDate}</Text>
           </View>
 
-          {/* Meal Name */}
+          {/* MEAL NAME */}
           <Text style={[styles.label, { fontSize }]}>Meal Name</Text>
           <TextInput
             style={[styles.input, { fontSize }]}
@@ -79,7 +108,26 @@ export default function LogMealPage() {
             onChangeText={setMealName}
           />
 
-          {/* Ingredients */}
+          {/* MEAL TYPE */}
+          <Text style={[styles.label, { fontSize }]}>Meal Type</Text>
+          <View style={styles.row}>
+            {(['Breakfast', 'Lunch', 'Dinner', 'Snack'] as MealType[]).map(type => (
+              <Pressable
+                key={type}
+                onPress={() => setMealType(type)}
+                style={[
+                  styles.typeButton,
+                  mealType === type && styles.typeSelected,
+                ]}
+              >
+                <Text style={{ color: mealType === type ? '#fff' : '#000', fontSize }}>
+                  {type}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
+          {/* INGREDIENTS */}
           <Text style={[styles.label, { fontSize }]}>Ingredients</Text>
           <TextInput
             style={[styles.input, { height: 80, fontSize }]}
@@ -89,8 +137,8 @@ export default function LogMealPage() {
             multiline
           />
 
-          {/* Estimated Calories */}
-          <Text style={[styles.label, { fontSize }]}>Estimated Calories</Text>
+          {/* CALORIES */}
+          <Text style={[styles.label, { fontSize }]}>Calories</Text>
           <TextInput
             style={[styles.input, { fontSize }]}
             placeholder="Ex: 450"
@@ -99,26 +147,54 @@ export default function LogMealPage() {
             keyboardType="numeric"
           />
 
-          {/* Flag Allergens */}
-          <Text style={[styles.label, { fontSize }]}>Flag Potential Allergens</Text>
+          {/* MACROS */}
+          <Text style={[styles.label, { fontSize }]}>Protein</Text>
+          <TextInput
+            style={[styles.input, { fontSize }]}
+            placeholder="g"
+            value={protein}
+            onChangeText={setProtein}
+            keyboardType="numeric"
+          />
+
+          <Text style={[styles.label, { fontSize }]}>Carbs</Text>
+          <TextInput
+            style={[styles.input, { fontSize }]}
+            placeholder="g"
+            value={carbs}
+            onChangeText={setCarbs}
+            keyboardType="numeric"
+          />
+
+          <Text style={[styles.label, { fontSize }]}>Fat</Text>
+          <TextInput
+            style={[styles.input, { fontSize }]}
+            placeholder="g"
+            value={fat}
+            onChangeText={setFat}
+            keyboardType="numeric"
+          />
+
+          {/* ALLERGENS */}
+          <Text style={[styles.label, { fontSize }]}>Allergens</Text>
           <View style={styles.allergenRow}>
-            {(['dairy', 'nuts', 'gluten'] as AllergenKeys[]).map((item) => (
+            {(['dairy', 'nuts', 'gluten'] as AllergenKeys[]).map(item => (
               <Pressable
                 key={item}
+                onPress={() => toggleAllergen(item)}
                 style={[
                   styles.allergenButton,
                   allergens[item] && styles.allergenSelected,
                 ]}
-                onPress={() => toggleAllergen(item)}
               >
-                <Text style={[styles.allergenText, { fontSize }]}>
-                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                <Text style={{ color: allergens[item] ? '#fff' : '#000', fontSize }}>
+                  {item}
                 </Text>
               </Pressable>
             ))}
           </View>
 
-          {/* Save Button */}
+          {/* SAVE BUTTON */}
           <Pressable style={styles.button} onPress={handleSave}>
             <Text style={[styles.buttonText, { fontSize }]}>Save Meal</Text>
           </Pressable>
@@ -159,23 +235,45 @@ const styles = StyleSheet.create({
     marginTop: 6,
     backgroundColor: '#ffffffaa',
   },
+
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+
+  typeButton: {
+    flex: 1,
+    padding: 10,
+    marginHorizontal: 4,
+    borderRadius: 8,
+    backgroundColor: '#ffffffaa',
+    alignItems: 'center',
+  },
+
+  typeSelected: {
+    backgroundColor: '#2b2c2a',
+  },
+
   allergenRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
   },
+
   allergenButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    flex: 1,
+    marginHorizontal: 4,
+    padding: 10,
     borderRadius: 8,
     backgroundColor: '#ffffffaa',
+    alignItems: 'center',
   },
+
   allergenSelected: {
     backgroundColor: '#2b2c2a',
   },
-  allergenText: {
-    fontWeight: '600',
-  },
+
   button: {
     marginTop: 30,
     backgroundColor: '#636B2F',
@@ -183,9 +281,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
+
   buttonText: {
     color: '#fff',
-    fontSize: 16,
     fontWeight: 'bold',
   },
 });
