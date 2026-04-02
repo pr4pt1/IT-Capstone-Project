@@ -1,17 +1,9 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert,} 
+from 'react-native';
 import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
-import { useContext } from "react";
 import { FontSizeContext } from "../components/FontSize";
-
 
 export default function SymptomsScreen() {
   const router = useRouter();
@@ -30,20 +22,34 @@ export default function SymptomsScreen() {
     { label: '😖', value: 'severe', text: 'Severe' },
   ];
 
-  // Get current date & time formatted
-  const formattedDate = new Date().toLocaleString();
-
   const handleSave = () => {
+    if (!symptoms.trim()) {
+      Alert.alert('Missing Info', 'Please describe your symptoms.');
+      return;
+    }
+
+    if (!mood) {
+      Alert.alert('Missing Info', 'Please select a mood.');
+      return;
+    }
+
+    const now = new Date();
+    const dateKey = now.toISOString().split('T')[0];
+
     const entry = {
-      symptoms,
+      symptoms: symptoms
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean),
+
       mood,
       severity,
-      notes,
-      timestamp: new Date().toISOString(), // full timestamp for calendar
-      date: new Date().toISOString().split('T')[0], // YYYY-MM-DD for calendar filtering
+      notes: notes.trim(),
+
+      timestamp: now.toISOString(),
+      date: dateKey,
     };
 
-    // Navigate to confirmation page
     router.push({
       pathname: '/symptoms-confirmation-page',
       params: { data: JSON.stringify(entry) },
@@ -52,25 +58,18 @@ export default function SymptomsScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Log Symptoms</Text>
+      <Text style={[styles.title, { fontSize: fontSize + 8 }]}>
+        Log Symptoms
+      </Text>
 
-      {/* Date & Time */}
-      <Text style={[styles.label, { fontSize }]}>Date & Time</Text>
-      <View style={styles.box}>
-        <Text style={{ fontSize }}>{formattedDate}</Text>
-      </View>
-
-      {/* Describe Symptoms */}
       <Text style={[styles.label, { fontSize }]}>Describe Symptoms</Text>
       <TextInput
         style={styles.input}
         placeholder="Ex: Stomach pain, bloating"
-        placeholderTextColor="#3D4127"
         value={symptoms}
         onChangeText={setSymptoms}
       />
 
-      {/* Mood After Eating */}
       <Text style={[styles.label, { fontSize }]}>Mood</Text>
       <View style={styles.moodRow}>
         {moods.map((m) => (
@@ -79,81 +78,57 @@ export default function SymptomsScreen() {
             style={[styles.moodButton, mood === m.value && styles.moodSelected]}
             onPress={() => setMood(m.value)}
           >
-            <Text style={[styles.moodEmoji, { fontSize: fontSize + 5 }]}>{m.label}</Text>
-            <Text style={[styles.moodLabel, { fontSize: fontSize - 5 }]}>{m.text}</Text>
+            <Text style={{ fontSize: fontSize + 5 }}>{m.label}</Text>
+            <Text style={{ fontSize: fontSize - 5 }}>{m.text}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Severity Slider */}
-      <Text style={[styles.label, { fontSize }]}>Symptoms Severity</Text>
-      <View style={styles.sliderRow}>
-        <Text style={[styles.sliderLabel, { fontSize }]}>1</Text>
-        <Slider
-          style={{ flex: 1 }}
-          minimumValue={1}
-          maximumValue={10}
-          step={1}
-          value={severity}
-          minimumTrackTintColor="#636B2F"
-          maximumTrackTintColor="#3D4127"
-          thumbTintColor="#636B2F"
-          onValueChange={setSeverity}
-        />
-        <Text style={[styles.sliderLabel, { fontSize }]}>10</Text>
-      </View>
-      <Text style={[styles.severityValue, { fontSize }]}>Severity: {severity}</Text>
+      <Text style={[styles.label, { fontSize }]}>Severity</Text>
+      <Slider
+        minimumValue={1}
+        maximumValue={10}
+        step={1}
+        value={severity}
+        onValueChange={setSeverity}
+      />
 
-      {/* Additional Notes */}
-      <Text style={[styles.label, { fontSize }]}>Additional Notes</Text>
+      <Text style={[styles.label, { fontSize }]}>
+        Severity: {severity}
+      </Text>
+
+      <Text style={[styles.label, { fontSize }]}>Notes</Text>
       <TextInput
-        style={styles.notesInput}
-        placeholder="Anything else to add?"
-        placeholderTextColor="#3D4127"
+        style={styles.input}
         value={notes}
         onChangeText={setNotes}
         multiline
       />
 
-      {/* Save Button */}
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={[styles.saveButtonText, { fontSize }]}>Save Symptoms</Text>
+        <Text style={{ color: '#fff' }}>Continue</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
-
-
-  moodLabel: {
-    marginTop: 4, color: '#3D4127',
-    textAlign: 'center'
-  },
   container: {
     flex: 1,
     backgroundColor: '#BAC095',
-    padding: 20
+    padding: 20,
   },
 
   title: {
     fontWeight: '700',
     color: '#3D4127',
     textAlign: 'center',
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   label: {
     fontWeight: '600',
     color: '#3D4127',
-    marginTop: 15
-  },
-
-  box: {
-    backgroundColor: '#ffffffaa',
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 6
+    marginTop: 15,
   },
 
   input: {
@@ -161,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     marginTop: 8,
-    color: '#3D4127'
+    color: '#3D4127',
   },
 
   notesInput: {
@@ -169,45 +144,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     marginTop: 8,
-    height: 90, color: '#3D4127'
+    height: 90,
+    color: '#3D4127',
   },
 
   moodRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10
-  },
-
-  sliderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10
-  },
-
-  sliderLabel: {
-    color: '#3D4127',
-    fontWeight: '600',
-    marginHorizontal: 5
-  },
-
-  severityValue: {
-    textAlign: 'center',
-    color: '#3D4127',
-    marginTop: 5,
-    fontWeight: '600'
-  },
-
-  saveButton: {
-    backgroundColor: '#636B2F',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 25
-  },
-
-  saveButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: '700',
+    marginTop: 10,
   },
 
   moodButton: {
@@ -219,11 +163,49 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDE3C2',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 5
+    paddingVertical: 5,
   },
 
   moodSelected: {
     backgroundColor: '#636B2F',
-    borderColor: '#636B2F'
+    borderColor: '#636B2F',
+  },
+
+  moodLabel: {
+    marginTop: 4,
+    color: '#3D4127',
+    textAlign: 'center',
+  },
+
+  sliderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+
+  sliderLabel: {
+    color: '#3D4127',
+    fontWeight: '600',
+    marginHorizontal: 5,
+  },
+
+  severityValue: {
+    textAlign: 'center',
+    color: '#3D4127',
+    marginTop: 5,
+    fontWeight: '600',
+  },
+
+  saveButton: {
+    backgroundColor: '#636B2F',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 25,
+  },
+
+  saveButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: '700',
   },
 });

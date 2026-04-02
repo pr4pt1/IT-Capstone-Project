@@ -1,72 +1,55 @@
 import { Text, StyleSheet, ScrollView, Pressable, ImageBackground, Image } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState, useContext } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useContext } from "react";
 import { FontSizeContext } from "../components/FontSize";
 
-// Type for saved entries
-type SymptomEntry = {
-  date: string;
-  symptoms: string[];
-  notes?: string;
-  meal?: string;
-  mood?: string;
-  severity?: number;
-  timestamp: string;
-};
-
-type IncomingEntry = {
-  meal: string;
-  symptoms: string;
-  mood: string;
-  severity: number;
-  notes: string;
-  timestamp: string;
-};
+import { auth, db } from "../firebaseConfig";
+import { doc, setDoc, arrayUnion } from "firebase/firestore";
 
 export default function SymptomLoggedConfirmationPage() {
   const router = useRouter();
   const { fontSize } = useContext(FontSizeContext);
   const params = useLocalSearchParams();
 
-  const entry: IncomingEntry | null = params.data
-    ? JSON.parse(params.data as string)
-    : null;
+  const [saved, setSaved] = useState(false);
+
+  const entry = params.data ? JSON.parse(params.data) : null;
 
   useEffect(() => {
-    const saveToStorage = async () => {
-      if (!entry) return;
+    const saveToFirebase = async () => {
+      if (!entry || saved) return;
 
-      const stored = await AsyncStorage.getItem('symptomEntries');
-      const existing: SymptomEntry[] = stored ? JSON.parse(stored) : [];
+      const user = auth.currentUser;
+      if (!user) return;
 
-      const symptomsArray =
-        typeof entry.symptoms === 'string'
-          ? entry.symptoms.split(',').map((s) => s.trim())
-          : entry.symptoms;
+      const dateKey = entry.date;
 
-      const newEntry: SymptomEntry = {
-        date: entry.timestamp.split('T')[0], // calendar key
-        symptoms: symptomsArray,
-        notes: entry.notes,
-        meal: entry.meal,
+      const symptomObject = {
+        timestamp: entry.timestamp,
+        symptoms: entry.symptoms,
         mood: entry.mood,
         severity: entry.severity,
-        timestamp: entry.timestamp, // keep full time
+        notes: entry.notes,
       };
 
-      await AsyncStorage.setItem(
-        'symptomEntries',
-        JSON.stringify([...existing, newEntry])
+      const ref = doc(db, "users", user.uid, "logs", dateKey);
+
+      await setDoc(
+        ref,
+        {
+          symptoms: arrayUnion(symptomObject),
+        },
+        { merge: true }
       );
+
+      setSaved(true);
     };
 
-    saveToStorage();
-  }, [entry]);
+    saveToFirebase();
+  }, []);
 
   return (
     <ImageBackground
@@ -90,7 +73,9 @@ export default function SymptomLoggedConfirmationPage() {
             style={styles.button}
             onPress={() => router.push('/Calendar')}
           >
-            <Text style={[styles.buttonText, { fontSize }]}>Continue</Text>
+            <Text style={[styles.buttonText, { fontSize }]}>
+              Continue
+            </Text>
           </Pressable>
         </ThemedView>
       </ScrollView>
