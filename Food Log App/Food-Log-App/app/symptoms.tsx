@@ -78,8 +78,8 @@ export default function SymptomsScreen() {
             style={[styles.moodButton, mood === m.value && styles.moodSelected]}
             onPress={() => setMood(m.value)}
           >
-            <Text style={{ fontSize: fontSize - 10 }}>{m.label}</Text>
-            <Text style={{ fontSize: fontSize - 10 }}>{m.text}</Text>
+            <Text style={styles.emoji}>{m.label}</Text>
+            <Text style={styles.moodText}>{m.text}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -116,6 +116,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#BAC095',
     padding: 20,
+  },
+
+  emoji: {
+    fontSize: 16
+  },
+
+  moodText: {
+    fontSize: 16
   },
 
   title: {
