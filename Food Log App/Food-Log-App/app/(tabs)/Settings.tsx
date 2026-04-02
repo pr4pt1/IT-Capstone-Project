@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
 import { ImageBackground } from "react-native";
-import { FontSizeContext } from "../components/FontSize";
+import { FontSizeContext } from "@/components/FontSize";
 import { useContext } from "react";
 
 export default function Settings() {
