@@ -57,16 +57,27 @@ export default function CalendarScreen() {
 
   // Filter symptoms and meals for selected date (ignore time)
   useEffect(() => {
-    setSymptomsForDay(allSymptoms.filter(entry => {
-      const entryDate = new Date(entry.timestamp).toISOString().split('T')[0];
-      return entryDate === selectedDate;
-    }));
+  const safeFilter = (value: string | undefined) => {
+    if (!value) return null;
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return null;
+    return d.toISOString().split("T")[0];
+  };
 
-    setMealsForDay(allMeals.filter(meal => {
-      const mealDate = new Date(meal.date).toISOString().split('T')[0];
-      return mealDate === selectedDate;
-    }));
-  }, [selectedDate, allSymptoms, allMeals]);
+  setSymptomsForDay(
+    allSymptoms.filter((entry) => {
+      const dateOnly = safeFilter(entry.timestamp);
+      return dateOnly === selectedDate;
+    })
+  );
+
+  setMealsForDay(
+    allMeals.filter((meal) => {
+      const dateOnly = safeFilter(meal.date);
+      return dateOnly === selectedDate;
+    })
+  );
+}, [selectedDate, allSymptoms, allMeals]);
 
   const clearCalendarData = () => {
     Alert.alert(
@@ -134,6 +145,8 @@ export default function CalendarScreen() {
             dayTextColor: '#3D4127',
             arrowColor: '#3D4127',
             monthTextColor: '#3D4127',
+            textMonthFontWeight: "bold",
+            textMonthFontSize: 22,
           }}
         />
 
@@ -145,7 +158,7 @@ export default function CalendarScreen() {
             {/* MEALS */}
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Text style={[styles.sectionTitle, { fontSize: fontSize + 4 }]}>Meals Logged</Text>
+                <Text style={styles.sectionHeaderText}>Meals Logged</Text>
                 <TouchableOpacity
                   onPress={() => router.push('/LogMealPage')}
                   style={styles.plusButton}
@@ -155,12 +168,13 @@ export default function CalendarScreen() {
               </View>
 
               {mealsForDay.length === 0 ? (
-                <Text style={styles.emptyText}>No meals logged for this day.</Text>
+                <Text style={styles.sectionBodyText}>No meals logged for this day.</Text>
               ) : (
                 mealsForDay.map((meal, index) => (
                   <View key={index} style={styles.symptomItem}>
-                    <Text style={[styles.symptomText, { fontSize: fontSize + 4 }]}>{meal.mealName}</Text>
-                    <Text style={[styles.notesText, { fontSize: fontSize + 4 }]}>
+                    <Text style={styles.sectionBodyText}>{meal.mealName}</Text>
+
+                    <Text style={styles.sectionBodyText}>
                       Time: {new Date(meal.date).toLocaleString([], {
                         month: 'short',
                         day: 'numeric',
@@ -169,81 +183,103 @@ export default function CalendarScreen() {
                         minute: '2-digit',
                       })}
                     </Text>
-                    {meal.calories && <Text style={styles.notesText}>Calories: {meal.calories}</Text>}
+
+                    {meal.calories && (
+                      <Text style={styles.sectionBodyText}>Calories: {meal.calories}</Text>
+                    )}
+
                     {meal.allergens && (
-                      <Text style={[styles.notesText, { fontSize: fontSize + 4 }]}>
-                        Allergens:{" "}
-                        {[meal.allergens.dairy ? "Dairy" : null,
-                        meal.allergens.nuts ? "Nuts" : null,
-                        meal.allergens.gluten ? "Gluten" : null]
+                      <Text style={styles.sectionBodyText}>
+                        Allergens:{' '}
+                        {[meal.allergens.dairy ? 'Dairy' : null,
+                          meal.allergens.nuts ? 'Nuts' : null,
+                          meal.allergens.gluten ? 'Gluten' : null]
                           .filter(Boolean)
-                          .join(", ") || "None"}
+                          .join(', ') || 'None'}
                       </Text>
                     )}
-                    {meal.ingredients && <Text style={[styles.notesText, { fontSize: fontSize + 4 }]}>Ingredients: {meal.ingredients}</Text>}
+
+                    {meal.ingredients && (
+                      <Text style={styles.sectionBodyText}>
+                        Ingredients: {meal.ingredients}
+                      </Text>
+                    )}
                   </View>
                 ))
               )}
-            </View>
+    </View>
 
-            {/* SYMPTOMS */}
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Logged Symptoms</Text>
-                <TouchableOpacity
-                  onPress={() => router.push('/symptoms')}
-                  style={styles.plusButton}
-                >
-                  <Text style={styles.plusText}>+</Text>
-                </TouchableOpacity>
-              </View>
-              {symptomsForDay.length === 0 ? (
-                <Text style={[styles.emptyText, { fontSize: fontSize + 4 }]}>No symptoms logged for this day.</Text>
-              ) : (
-                symptomsForDay.map((entry, index) => (
-                  <View key={index} style={styles.symptomItem}>
-                    {/* Date & Time */}
-                    <Text style={styles.notesText}>
-                      Time: {new Date(entry.timestamp).toLocaleString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </Text>
+    {/* SYMPTOMS */}
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionHeaderText}>Logged Symptoms</Text>
+        <TouchableOpacity
+          onPress={() => router.push('/symptoms')}
+          style={styles.plusButton}
+        >
+          <Text style={styles.plusText}>+</Text>
+        </TouchableOpacity>
+      </View>
 
-                    {/* Symptom description */}
-                    <Text style={styles.symptomText}>
-                      {Array.isArray(entry.symptoms) ? entry.symptoms.join(', ') : entry.symptoms}
-                    </Text>
+      {symptomsForDay.length === 0 ? (
+        <Text style={styles.sectionBodyText}>No symptoms logged for this day.</Text>
+      ) : (
+        symptomsForDay.map((entry, index) => (
+          <View key={index} style={styles.symptomItem}>
+            <Text style={styles.sectionBodyText}>
+              Time:{' '}
+              {new Date(entry.timestamp).toLocaleString([], {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </Text>
 
-                    {/* Notes */}
-                    {entry.notes && <Text style={styles.notesText}>Notes: {entry.notes}</Text>}
-                  </View>
-                ))
-              )}
-            </View>
+            {/* Symptom description */}
+            <Text style={styles.sectionBodyText}>
+              {Array.isArray(entry.symptoms)
+                ? entry.symptoms.join(', ')
+                : entry.symptoms}
+            </Text>
 
-            {/* MOOD */}
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Mood & Severity</Text>
-              </View>
-              {symptomsForDay.length === 0 ? (
-                <Text style={styles.emptyText}>No mood or severity logged.</Text>
-              ) : (
-                symptomsForDay.map((entry, index) => (
-                  <View key={index} style={styles.symptomItem}>
-                    {entry.mood && <Text style={styles.symptomText}>Mood: {moodEmojiMap[entry.mood]} {entry.mood}</Text>}
-                    {entry.severity !== undefined && <Text style={styles.symptomText}>Severity: {entry.severity}</Text>}
-                  </View>
-                ))
-              )}
-            </View>
-
+            {entry.notes && (
+              <Text style={styles.sectionBodyText}>Notes: {entry.notes}</Text>
+            )}
           </View>
-        </ScrollView>
+        ))
+      )}
+    </View>
+
+    {/* MOOD */}
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionHeaderText}>Mood & Severity</Text>
+      </View>
+
+      {symptomsForDay.length === 0 ? (
+        <Text style={styles.sectionBodyText}>No mood or severity logged.</Text>
+      ) : (
+        symptomsForDay.map((entry, index) => (
+          <View key={index} style={styles.symptomItem}>
+            {entry.mood && (
+              <Text style={styles.sectionBodyText}>
+                Mood: {moodEmojiMap[entry.mood]} {entry.mood}
+              </Text>
+            )}
+            {entry.severity !== undefined && (
+              <Text style={styles.sectionBodyText}>
+                Severity: {entry.severity}
+              </Text>
+            )}
+          </View>
+        ))
+      )}
+    </View>
+
+  </View>
+</ScrollView>
 
       </View>
     </ImageBackground>
@@ -288,8 +324,8 @@ const styles = StyleSheet.create({
   },
 
   detailsTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
     color: '#3D4127',
     textAlign: 'center',
     marginTop: 24,
@@ -359,4 +395,16 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 14
   },
+
+  sectionHeaderText: {
+  fontSize: 20,
+  fontWeight: "700",
+  color: "#3D4127",
+},
+
+sectionBodyText: {
+  fontSize: 18,
+  color: "#3D4127",
+  marginTop: 4,
+},
 });
