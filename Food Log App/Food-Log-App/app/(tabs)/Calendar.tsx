@@ -1,12 +1,5 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  ImageBackground,
-  Alert
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground, Alert} 
+from 'react-native';
 
 import { Calendar } from 'react-native-calendars';
 import { useState, useEffect, useContext } from 'react';
@@ -30,9 +23,7 @@ const moodEmojiMap: Record<string, string> = {
   severe: "😖",
 };
 
-/* =========================
-   TYPES
-========================= */
+
 type SymptomEntry = {
   timestamp: string;
   symptoms: string | string[];
@@ -71,9 +62,7 @@ export default function CalendarScreen() {
   const [mealsForDay, setMealsForDay] = useState<MealEntry[]>([]);
   const [allLogs, setAllLogs] = useState<any>({});
 
-  /* =========================
-     FIREBASE LISTENER
-  ========================= */
+
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
@@ -93,9 +82,7 @@ export default function CalendarScreen() {
     return () => unsub();
   }, []);
 
-  /* =========================
-     FILTER SELECTED DAY
-  ========================= */
+
   useEffect(() => {
     const dayData = allLogs?.[selectedDate] || {};
 
@@ -103,9 +90,7 @@ export default function CalendarScreen() {
     setSymptomsForDay(dayData.symptoms || []);
   }, [selectedDate, allLogs]);
 
-  /* =========================
-     CLEAR DATA
-  ========================= */
+
   const clearCalendarData = () => {
     Alert.alert(
       "Clear Calendar",
@@ -384,9 +369,7 @@ export default function CalendarScreen() {
   );
 }
 
-/* =========================
-   STYLES (UNCHANGED)
-========================= */
+
 const styles = StyleSheet.create({
   background: { flex: 1 },
   container: { flex: 1, backgroundColor: '#BAC095' },

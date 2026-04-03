@@ -77,9 +77,6 @@ export default function Settings() {
                     </Text>
                 </Pressable>
 
-                {/* ===================== */}
-                {/* LOGOUT SECTION (BOTTOM) */}
-                {/* ===================== */}
 
                 <Text style={[styles.section, { fontSize, marginTop: 40 }]}>
                     Logout

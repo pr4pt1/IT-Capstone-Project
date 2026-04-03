@@ -11,7 +11,6 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { FontSizeContext } from "@/components/FontSize";
 
-// FIREBASE
 import { auth, db } from "@/firebaseConfig";
 import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
 
@@ -77,7 +76,6 @@ export default function WelcomePage() {
     const dayData = allLogs?.[selectedDateKey] || {};
     let meals = dayData.meals || [];
 
-    // 🔥 SORT BY TIME (NEWEST FIRST)
     meals = meals.slice().sort(
       (a: any, b: any) =>
         new Date(b.timestamp || 0).getTime() -
@@ -270,9 +268,6 @@ export default function WelcomePage() {
   );
 }
 
-/* =========================
-   CALORIE RING
-========================= */
 type CalorieRingProps = {
   progress: number;
   fontSize: number;
