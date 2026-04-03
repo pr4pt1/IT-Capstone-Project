@@ -6,7 +6,6 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { FontSizeContext } from "../components/FontSize";
 
-// Firebase
 import { auth, db } from '@/firebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 
