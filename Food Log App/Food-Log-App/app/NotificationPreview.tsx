@@ -16,12 +16,12 @@ export default function NotificationPreview() {
     Alert.alert(
       "Success",
       "Preview settings saved.",
-      [{ text: "OK", onPress: () => router.replace("/Notifications") }]
+      [{ text: "OK", onPress: () => router.replace("/Settings") }]
     );
   };
 
   const handleCancel = () => {
-    router.replace("/Notifications");
+    router.replace("/Settings");
   };
 
   return (
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   saveText: {
-    color: '#b8ff7eff',
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },

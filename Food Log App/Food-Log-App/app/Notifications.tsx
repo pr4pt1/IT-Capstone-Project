@@ -17,15 +17,6 @@ export default function Notifications() {
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
 
-          {/* Header with back button */}
-          <View style={styles.header}>
-            <Pressable onPress={() => router.back()} style={styles.backButton}>
-              <Text style={[styles.backText, { fontSize: fontSize + 8 }]}>←</Text>
-            </Pressable>
-            <Text style={[styles.title, { fontSize: fontSize + 8 }]}>Notifications</Text>
-            <View style={styles.placeholder} />
-          </View>
-
           {/* Notification Sound Option */}
           <Pressable
             style={styles.option}
@@ -66,13 +57,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 30,
   },
-  backButton: {
-    padding: 8,
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  
   backText: {
     fontSize: 32,
     color: '#2b2c2aff',
