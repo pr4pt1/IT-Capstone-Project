@@ -7,7 +7,6 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { FontSizeContext } from "../components/FontSize";
 
-// 🔥 FIREBASE IMPORTS
 import { doc, setDoc, arrayUnion } from "firebase/firestore";
 import { db, auth } from "@/firebaseConfig";
 
