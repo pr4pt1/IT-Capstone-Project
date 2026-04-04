@@ -119,7 +119,9 @@ export default function LogMealPage() {
                   mealType === type && styles.typeSelected,
                 ]}
               >
-                <Text style={{ color: mealType === type ? '#fff' : '#000', fontSize: fontSize - 10 }}>
+                <Text style={[styles.mealName, { color: mealType === type ? '#fff' : '#000' },
+
+                ]}>
                   {type}
                 </Text>
               </Pressable>
@@ -205,6 +207,9 @@ export default function LogMealPage() {
 }
 
 const styles = StyleSheet.create({
+  mealName: {
+    fontSize: 14,
+  },
   background: {
     flex: 1,
   },
