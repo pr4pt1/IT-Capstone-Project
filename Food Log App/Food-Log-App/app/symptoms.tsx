@@ -106,7 +106,7 @@ export default function SymptomsScreen() {
       />
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={{ color: '#fff' }}>Continue</Text>
+        <Text style={{ color: '#fff' }}>Save Symptoms</Text>
       </TouchableOpacity>
     </ScrollView>
   );
